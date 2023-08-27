@@ -20,16 +20,11 @@ $dingoApi->version("v1", [
     "middleware" => ["AdminToken", "CrossHttp"]
 ], function ($dingoApi) {
 
-    // 物业管理
-    $dingoApi->get("property/propertyList", \App\Http\Controllers\Admin\Property\IndexController::class."@propertyList")->name("property.propertyList");
-    $dingoApi->post("property/addProperty", \App\Http\Controllers\Admin\Property\IndexController::class."@addProperty")->name("property.addProperty");
-    $dingoApi->post("property/editProperty", \App\Http\Controllers\Admin\Property\IndexController::class."@editProperty")->name("property.editProperty");
-    $dingoApi->post("property/delProperty", \App\Http\Controllers\Admin\Property\IndexController::class."@delProperty")->name("property.delProperty");
-    $dingoApi->post("property/uploadFile", \App\Http\Controllers\Admin\Property\IndexController::class."@uploadFile")->name("property.uploadFile");
-    $dingoApi->post("property/exportExcel", \App\Http\Controllers\Admin\Property\IndexController::class."@exportExcel")->name("property.exportExcel");
-    $dingoApi->post("property/exportImage", \App\Http\Controllers\Admin\Property\IndexController::class."@exportImage")->name("property.exportImage");
-    $dingoApi->post("property/uploadImage", \App\Http\Controllers\Admin\Property\IndexController::class."@uploadImage")->name("property.uploadImage");
-    $dingoApi->post("property/saveImage", \App\Http\Controllers\Admin\Property\IndexController::class."@saveImage")->name("property.saveImage");
+    // 租赁公司
+    $dingoApi->get("lease/company/list", \App\Http\Controllers\Admin\Lease\CompanyController::class."@list")->name("lease.company.list");
+    $dingoApi->post("lease/company/add", \App\Http\Controllers\Admin\Lease\CompanyController::class."@add")->name("lease.company.add");
+    $dingoApi->post("lease/company/edit", \App\Http\Controllers\Admin\Lease\CompanyController::class."@edit")->name("lease.company.edit");
+    $dingoApi->post("lease/company/del", \App\Http\Controllers\Admin\Lease\CompanyController::class."@del")->name("lease.company.del");
 
     // 用户
     $dingoApi->post("users/checkName", \App\Http\Controllers\Admin\System\UserController::class."@checkName")->name("users.checkName");

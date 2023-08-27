@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Property;
+namespace App\Http\Controllers\Admin\Lease;
 
 use App\Common\Upload;
 use App\Common\UploadAdmin;
@@ -12,13 +12,13 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
 /**
- * @name 物业
- * Class IndexController
- * @package App\Http\Controllers\Admin\Property
+ * @name 房屋信息
+ * Class HouseController
+ * @package App\Http\Controllers\Admin\Lease
  *
- * @Resource("market")
+ * @Resource("houses")
  */
-class IndexController extends Controller
+class HouseController extends Controller
 {
     use FormatTrait;
 
