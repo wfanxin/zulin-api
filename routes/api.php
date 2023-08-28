@@ -26,6 +26,12 @@ $dingoApi->version("v1", [
     $dingoApi->post("lease/company/edit", \App\Http\Controllers\Admin\Lease\CompanyController::class."@edit")->name("lease.company.edit");
     $dingoApi->post("lease/company/del", \App\Http\Controllers\Admin\Lease\CompanyController::class."@del")->name("lease.company.del");
 
+    // 租赁合同
+    $dingoApi->get("lease/house/list", \App\Http\Controllers\Admin\Lease\HouseController::class."@list")->name("lease.house.list");
+    $dingoApi->post("lease/house/add", \App\Http\Controllers\Admin\Lease\HouseController::class."@add")->name("lease.house.add");
+    $dingoApi->post("lease/house/edit", \App\Http\Controllers\Admin\Lease\HouseController::class."@edit")->name("lease.house.edit");
+    $dingoApi->post("lease/house/del", \App\Http\Controllers\Admin\Lease\HouseController::class."@del")->name("lease.house.del");
+
     // 用户
     $dingoApi->post("users/checkName", \App\Http\Controllers\Admin\System\UserController::class."@checkName")->name("users.checkName");
     $dingoApi->put("users/pwd", \App\Http\Controllers\Admin\System\UserController::class."@changePwd")->name("users.changePwd");

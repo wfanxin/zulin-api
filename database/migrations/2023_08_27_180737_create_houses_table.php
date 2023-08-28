@@ -16,6 +16,8 @@ class CreateHousesTable extends Migration
         Schema::create('houses', function (Blueprint $table) {
             $table->bigIncrements('id');
 
+            $table->integer('user_id')->comment('用户id');
+
             $table->bigInteger('company_id')->comment('租赁公司id');
             $table->string('shop_number', 100)->comment('商铺号');
             $table->decimal('lease_area', 8, 2)->comment('租赁面积㎡');
