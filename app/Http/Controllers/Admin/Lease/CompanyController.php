@@ -52,7 +52,6 @@ class CompanyController extends Controller
             ->paginate($pageSize, ['*'], 'page', $page);
 
         // 用户名称
-
         if (!empty($data->items())) {
             $user_ids = array_column($data->items(), 'user_id');
             $user_list = $mUser->whereIn('id', $user_ids)->get();

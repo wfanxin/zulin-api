@@ -27,7 +27,7 @@ class CreateHousesTable extends Migration
             $table->string('repair_period', 255)->comment('装修期');
             $table->string('category', 255)->comment('业态/品类');
             $table->string('contract_number', 100)->comment('租赁合同编号');
-            $table->decimal('unit_price', 8, 2)->comment('租金单价㎡/元/日');
+            $table->decimal('unit_price', 8, 2)->comment('租金单价元/㎡/日');
             $table->decimal('performance_bond', 10, 2)->comment('履约保证金');
             $table->tinyInteger('pay_method')->comment('租金支付方式');
             $table->tinyInteger('increase_type')->comment('租金涨幅方式：1、递增；2、自定义');
@@ -36,7 +36,7 @@ class CreateHousesTable extends Migration
             $table->string('property_contract_number', 100)->comment('物业合同编号');
             $table->string('property_safety_person', 100)->comment('安全责任人');
             $table->string('property_contact_info', 100)->comment('联系方式');
-            $table->decimal('property_unit_price', 8, 2)->comment('物业费单价㎡/元/月');
+            $table->decimal('property_unit_price', 8, 2)->comment('物业费单价元/㎡/月');
             $table->tinyInteger('property_pay_method')->comment('物业支付方式');
             $table->tinyInteger('property_increase_type')->comment('物业涨幅方式：1、递增；2、自定义');
             $table->text('property_increase_content')->comment('物业涨幅详情');

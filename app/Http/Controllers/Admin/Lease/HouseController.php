@@ -40,6 +40,16 @@ class HouseController extends Controller
             $where[] = ['user_id', '=', $params['userId']];
         }
 
+        // 租赁合同
+        if (!empty($params['company_name'])){
+            $company_ids = $mCompany->where('company_name', 'like', '%' . $params['company_name'] . '%')->get(['id']);
+            $company_ids = $this->dbResult($company_ids);
+            $company_ids = array_column($company_ids, 'id');
+            $where[] = [function ($query) use ($company_ids) {
+                $query->whereIn('company_id', $company_ids);
+            }];
+        }
+
         // 商铺号
         if (!empty($params['shop_number'])){
             $where[] = ['shop_number', 'like', '%' . $params['shop_number'] . '%'];
@@ -55,6 +65,14 @@ class HouseController extends Controller
 
         $company_list = $mCompany->get(['id', 'company_name']);
         $company_list = $this->dbResult($company_list);
+
+        // 租赁公司
+        if (!empty($data->items())) {
+            $company_arr = array_column($company_list, null, 'id');
+            foreach ($data->items() as $k => $v){
+                $data->items()[$k]['company_name'] = $company_arr[$v->company_id]['company_name'] ?? '';
+            }
+        }
 
         return $this->jsonAdminResult([
             'total' => $data->total(),
@@ -72,41 +90,88 @@ class HouseController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      **/
-    public function add(Request $request, Property $mProperty)
+    public function add(Request $request, House $mHouse)
     {
         $params = $request->all();
+        $params['userId'] = $request->userId;
 
-        $number = $params['number'] ?? '';
-        $company = $params['company'] ?? '';
-        $property_type = $params['property_type'] ?? '';
-        $property_name = $params['property_name'] ?? '';
-        $address = $params['address'] ?? '';
-        $area = $params['area'] ?? '';
-        $term = $params['term'] ?? '';
-        $rent = $params['rent'] ?? '';
-        $notes = $params['notes'] ?? '';
+        // 租金
+        $company_id = $params['company_id'] ?? '';
+        $shop_number = $params['shop_number'] ?? '';
+        $lease_area = $params['lease_area'] ?? '';
+        $begin_lease_date = $params['begin_lease_date'] ?? '';
+        $stat_lease_date = $params['stat_lease_date'] ?? '';
+        $lease_year = $params['lease_year'] ?? '';
+        $repair_period = $params['repair_period'] ?? '';
+        $category = $params['category'] ?? '';
+        $contract_number = $params['contract_number'] ?? '';
+        $unit_price = $params['unit_price'] ?? '';
+        $performance_bond = $params['performance_bond'] ?? '';
+        $pay_method = $params['pay_method'] ?? '';
+        $increase_type = $params['increase_type'] ?? '';
 
-        if (empty($number)){
-            return $this->jsonAdminResult([],10001, '编号不能为空');
+        // 物业费
+        $property_contract_number = $params['property_contract_number'] ?? '';
+        $property_safety_person = $params['property_safety_person'] ?? '';
+        $property_contact_info = $params['property_contact_info'] ?? '';
+        $property_unit_price = $params['property_unit_price'] ?? '';
+        $property_pay_method = $params['property_pay_method'] ?? '';
+        $property_increase_type = $params['property_increase_type'] ?? '';
+
+        if (empty($company_id)){
+            return $this->jsonAdminResult([],10001, '请选择租赁公司');
         }
 
-        $info = $mProperty->where('number', $number)->first();
-        $info = $this->dbResult($info);
-        if (!empty($info)) {
-            return $this->jsonAdminResult([],10001, '编号重复');
+        if (empty($shop_number)){
+            return $this->jsonAdminResult([],10001, '商铺号不能为空');
+        }
+
+        if (empty($lease_area)){
+            return $this->jsonAdminResult([],10001, '租赁面积不能为空');
+        }
+
+        if (empty($lease_year)){
+            return $this->jsonAdminResult([],10001, '租赁年限不能为空');
+        }
+
+        if (empty($unit_price)){
+            return $this->jsonAdminResult([],10001, '租金单价不能为空');
+        }
+
+        if (empty($pay_method)){
+            return $this->jsonAdminResult([],10001, '请选择租金支付方式');
+        }
+
+        if (empty($property_unit_price)){
+            return $this->jsonAdminResult([],10001, '物业单价不能为空');
+        }
+
+        if (empty($property_pay_method)){
+            return $this->jsonAdminResult([],10001, '请选择物业支付方式');
         }
 
         $time = date('Y-m-d H:i:s');
-        $res = $mProperty->insert([
-            'number' => $number,
-            'company' => $company,
-            'property_type' => $property_type,
-            'property_name' => $property_name,
-            'address' => $address,
-            'area' => $area,
-            'term' => $term,
-            'rent' => $rent,
-            'notes' => $notes,
+        $res = $mHouse->insert([
+            'user_id' => $params['userId'],
+            'company_id' => $company_id,
+            'shop_number' => $shop_number,
+            'lease_area' => $lease_area,
+            'begin_lease_date' => $begin_lease_date,
+            'stat_lease_date' => $stat_lease_date,
+            'lease_year' => $lease_year,
+            'repair_period' => $repair_period,
+            'category' => $category,
+            'contract_number' => $contract_number,
+            'unit_price' => $unit_price,
+            'performance_bond' => $performance_bond,
+            'pay_method' => $pay_method,
+            'increase_type' => $increase_type,
+            'property_contract_number' => $property_contract_number,
+            'property_safety_person' => $property_safety_person,
+            'property_contact_info' => $property_contact_info,
+            'property_unit_price' => $property_unit_price,
+            'property_pay_method' => $property_pay_method,
+            'property_increase_type' => $property_increase_type,
             'created_at' => $time,
             'updated_at' => $time
         ]);
@@ -125,50 +190,102 @@ class HouseController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      **/
-    public function edit(Request $request, Property $mProperty)
+    public function edit(Request $request, House $mHouse)
     {
         $params = $request->all();
 
         $id = $params['id'] ?? 0;
-        $number = $params['number'] ?? '';
-        $company = $params['company'] ?? '';
-        $property_type = $params['property_type'] ?? '';
-        $property_name = $params['property_name'] ?? '';
-        $address = $params['address'] ?? '';
-        $area = $params['area'] ?? '';
-        $term = $params['term'] ?? '';
-        $rent = $params['rent'] ?? '';
-        $notes = $params['notes'] ?? '';
 
         if (empty($id)) {
             return $this->jsonAdminResult([],10001, '参数错误');
         }
 
-        if (empty($number)){
-            return $this->jsonAdminResult([],10001, '编号不能为空');
+        $info = $mHouse->where('id', $id)->first();
+        $info = $this->dbResult($info);
+        if (empty($info)) {
+            return $this->jsonAdminResult([],10001, '参数错误');
         }
 
-        $info = $mProperty->where('id', '!=', $id)->where('number', $number)->first();
-        $info = $this->dbResult($info);
-        if (!empty($info)) {
-            return $this->jsonAdminResult([],10001, '编号重复');
+        // 租金
+        $company_id = $params['company_id'] ?? '';
+        $shop_number = $params['shop_number'] ?? '';
+        $lease_area = $params['lease_area'] ?? '';
+        $begin_lease_date = $params['begin_lease_date'] ?? '';
+        $stat_lease_date = $params['stat_lease_date'] ?? '';
+        $lease_year = $params['lease_year'] ?? '';
+        $repair_period = $params['repair_period'] ?? '';
+        $category = $params['category'] ?? '';
+        $contract_number = $params['contract_number'] ?? '';
+        $unit_price = $params['unit_price'] ?? '';
+        $performance_bond = $params['performance_bond'] ?? '';
+        $pay_method = $params['pay_method'] ?? '';
+        $increase_type = $params['increase_type'] ?? '';
+
+        // 物业费
+        $property_contract_number = $params['property_contract_number'] ?? '';
+        $property_safety_person = $params['property_safety_person'] ?? '';
+        $property_contact_info = $params['property_contact_info'] ?? '';
+        $property_unit_price = $params['property_unit_price'] ?? '';
+        $property_pay_method = $params['property_pay_method'] ?? '';
+        $property_increase_type = $params['property_increase_type'] ?? '';
+
+        if (empty($company_id)){
+            return $this->jsonAdminResult([],10001, '请选择租赁公司');
+        }
+
+        if (empty($shop_number)){
+            return $this->jsonAdminResult([],10001, '商铺号不能为空');
+        }
+
+        if (empty($lease_area)){
+            return $this->jsonAdminResult([],10001, '租赁面积不能为空');
+        }
+
+        if (empty($lease_year)){
+            return $this->jsonAdminResult([],10001, '租赁年限不能为空');
+        }
+
+        if (empty($unit_price)){
+            return $this->jsonAdminResult([],10001, '租金单价不能为空');
+        }
+
+        if (empty($pay_method)){
+            return $this->jsonAdminResult([],10001, '请选择租金支付方式');
+        }
+
+        if (empty($property_unit_price)){
+            return $this->jsonAdminResult([],10001, '物业单价不能为空');
+        }
+
+        if (empty($property_pay_method)){
+            return $this->jsonAdminResult([],10001, '请选择物业支付方式');
         }
 
         $time = date('Y-m-d H:i:s');
-        $res = $mProperty->where('id', $id)->update([
-            'number' => $number,
-            'company' => $company,
-            'property_type' => $property_type,
-            'property_name' => $property_name,
-            'address' => $address,
-            'area' => $area,
-            'term' => $term,
-            'rent' => $rent,
-            'notes' => $notes,
+        $res = $mHouse->where('id', $id)->update([
+            'company_id' => $company_id,
+            'shop_number' => $shop_number,
+            'lease_area' => $lease_area,
+            'begin_lease_date' => $begin_lease_date,
+            'stat_lease_date' => $stat_lease_date,
+            'lease_year' => $lease_year,
+            'repair_period' => $repair_period,
+            'category' => $category,
+            'contract_number' => $contract_number,
+            'unit_price' => $unit_price,
+            'performance_bond' => $performance_bond,
+            'pay_method' => $pay_method,
+            'increase_type' => $increase_type,
+            'property_contract_number' => $property_contract_number,
+            'property_safety_person' => $property_safety_person,
+            'property_contact_info' => $property_contact_info,
+            'property_unit_price' => $property_unit_price,
+            'property_pay_method' => $property_pay_method,
+            'property_increase_type' => $property_increase_type,
             'updated_at' => $time
         ]);
 
-        if ($res !== false) {
+        if ($res) {
             return $this->jsonAdminResultWithLog($request);
         } else {
             return $this->jsonAdminResult([],10001,'操作失败');
@@ -182,7 +299,7 @@ class HouseController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      **/
-    public function del(Request $request, Property $mProperty)
+    public function del(Request $request, House $mHouse)
     {
         $params = $request->all();
 
@@ -192,7 +309,7 @@ class HouseController extends Controller
             return $this->jsonAdminResult([],10001,'参数错误');
         }
 
-        $res = $mProperty->where('id', $id)->delete();
+        $res = $mHouse->where('id', $id)->delete();
 
         if ($res !== false) {
             return $this->jsonAdminResultWithLog($request);
