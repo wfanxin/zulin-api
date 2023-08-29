@@ -60,7 +60,8 @@ class HouseController extends Controller
             'total' => $data->total(),
             'data' => $data->items(),
             'company_list' => $company_list,
-            'pay_method_list' => config('global.pay_method_list')
+            'pay_method_list' => config('global.pay_method_list'),
+            'increase_type_list' => config('global.increase_type_list')
         ]);
     }
 
