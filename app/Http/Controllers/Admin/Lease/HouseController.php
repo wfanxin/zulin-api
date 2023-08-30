@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\Controller;
 use App\Http\Traits\FormatTrait;
 use App\Model\Admin\Company;
 use App\Model\Admin\House;
-use App\Model\Admin\Property;
 use App\Model\Admin\User;
 use Illuminate\Http\Request;
 
@@ -71,6 +70,8 @@ class HouseController extends Controller
             $company_arr = array_column($company_list, null, 'id');
             foreach ($data->items() as $k => $v){
                 $data->items()[$k]['company_name'] = $company_arr[$v->company_id]['company_name'] ?? '';
+                $data->items()[$k]['increase_content'] = json_decode($v->increase_content, true) ?? [];
+                $data->items()[$k]['property_increase_content'] = json_decode($v->property_increase_content, true) ?? [];
             }
         }
 
@@ -109,6 +110,7 @@ class HouseController extends Controller
         $performance_bond = $params['performance_bond'] ?? '';
         $pay_method = $params['pay_method'] ?? '';
         $increase_type = $params['increase_type'] ?? '';
+        $increase_content = $params['increase_content'] ?? [];
 
         // 物业费
         $property_contract_number = $params['property_contract_number'] ?? '';
@@ -117,6 +119,7 @@ class HouseController extends Controller
         $property_unit_price = $params['property_unit_price'] ?? '';
         $property_pay_method = $params['property_pay_method'] ?? '';
         $property_increase_type = $params['property_increase_type'] ?? '';
+        $property_increase_content = $params['property_increase_content'] ?? [];
 
         if (empty($company_id)){
             return $this->jsonAdminResult([],10001, '请选择租赁公司');
@@ -150,6 +153,56 @@ class HouseController extends Controller
             return $this->jsonAdminResult([],10001, '请选择物业支付方式');
         }
 
+        if (!in_array($increase_type, [1, 2])) {
+            return $this->jsonAdminResult([],10001, '请选择租金涨幅方式');
+        }
+
+        if (count($increase_content) != $lease_year) {
+            return $this->jsonAdminResult([],10001, '请配置租金涨幅');
+        }
+
+        if ($increase_type == 1) {
+            foreach ($increase_content as $value) {
+                if ($value['percent'] == '') {
+                    return $this->jsonAdminResult([],10001, '租金涨幅递增比例不能为空');
+                }
+            }
+        } else if ($increase_type == 2) {
+            foreach ($increase_content as $value) {
+                if ($value['unit_price'] == '') {
+                    return $this->jsonAdminResult([],10001, '租金涨幅租金单价不能为空');
+                }
+                if ($value['year_price'] == '') {
+                    return $this->jsonAdminResult([],10001, '租金涨幅年租金不能为空');
+                }
+            }
+        }
+
+        if (!in_array($property_increase_type, [1, 2])) {
+            return $this->jsonAdminResult([],10001, '请选择物业涨幅方式');
+        }
+
+        if (count($property_increase_content) != $lease_year) {
+            return $this->jsonAdminResult([],10001, '请配置物业涨幅');
+        }
+
+        if ($property_increase_type == 1) {
+            foreach ($property_increase_content as $value) {
+                if ($value['percent'] == '') {
+                    return $this->jsonAdminResult([],10001, '物业涨幅递增比例不能为空');
+                }
+            }
+        } else if ($property_increase_type == 2) {
+            foreach ($property_increase_content as $value) {
+                if ($value['unit_price'] == '') {
+                    return $this->jsonAdminResult([],10001, '物业涨幅租金单价不能为空');
+                }
+                if ($value['year_price'] == '') {
+                    return $this->jsonAdminResult([],10001, '物业涨幅年租金不能为空');
+                }
+            }
+        }
+
         $time = date('Y-m-d H:i:s');
         $res = $mHouse->insert([
             'user_id' => $params['userId'],
@@ -166,12 +219,14 @@ class HouseController extends Controller
             'performance_bond' => $performance_bond,
             'pay_method' => $pay_method,
             'increase_type' => $increase_type,
+            'increase_content' => json_encode($increase_content),
             'property_contract_number' => $property_contract_number,
             'property_safety_person' => $property_safety_person,
             'property_contact_info' => $property_contact_info,
             'property_unit_price' => $property_unit_price,
             'property_pay_method' => $property_pay_method,
             'property_increase_type' => $property_increase_type,
+            'property_increase_content' => json_encode($property_increase_content),
             'created_at' => $time,
             'updated_at' => $time
         ]);
@@ -220,6 +275,7 @@ class HouseController extends Controller
         $performance_bond = $params['performance_bond'] ?? '';
         $pay_method = $params['pay_method'] ?? '';
         $increase_type = $params['increase_type'] ?? '';
+        $increase_content = $params['increase_content'] ?? [];
 
         // 物业费
         $property_contract_number = $params['property_contract_number'] ?? '';
@@ -228,6 +284,7 @@ class HouseController extends Controller
         $property_unit_price = $params['property_unit_price'] ?? '';
         $property_pay_method = $params['property_pay_method'] ?? '';
         $property_increase_type = $params['property_increase_type'] ?? '';
+        $property_increase_content = $params['property_increase_content'] ?? [];
 
         if (empty($company_id)){
             return $this->jsonAdminResult([],10001, '请选择租赁公司');
@@ -261,6 +318,56 @@ class HouseController extends Controller
             return $this->jsonAdminResult([],10001, '请选择物业支付方式');
         }
 
+        if (!in_array($increase_type, [1, 2])) {
+            return $this->jsonAdminResult([],10001, '请选择租金涨幅方式');
+        }
+
+        if (count($increase_content) != $lease_year) {
+            return $this->jsonAdminResult([],10001, '请配置租金涨幅');
+        }
+
+        if ($increase_type == 1) {
+            foreach ($increase_content as $value) {
+                if ($value['percent'] == '') {
+                    return $this->jsonAdminResult([],10001, '租金涨幅递增比例不能为空');
+                }
+            }
+        } else if ($increase_type == 2) {
+            foreach ($increase_content as $value) {
+                if ($value['unit_price'] == '') {
+                    return $this->jsonAdminResult([],10001, '租金涨幅租金单价不能为空');
+                }
+                if ($value['year_price'] == '') {
+                    return $this->jsonAdminResult([],10001, '租金涨幅年租金不能为空');
+                }
+            }
+        }
+
+        if (!in_array($property_increase_type, [1, 2])) {
+            return $this->jsonAdminResult([],10001, '请选择物业涨幅方式');
+        }
+
+        if (count($property_increase_content) != $lease_year) {
+            return $this->jsonAdminResult([],10001, '请配置物业涨幅');
+        }
+
+        if ($property_increase_type == 1) {
+            foreach ($property_increase_content as $value) {
+                if ($value['percent'] == '') {
+                    return $this->jsonAdminResult([],10001, '物业涨幅递增比例不能为空');
+                }
+            }
+        } else if ($property_increase_type == 2) {
+            foreach ($property_increase_content as $value) {
+                if ($value['unit_price'] == '') {
+                    return $this->jsonAdminResult([],10001, '物业涨幅租金单价不能为空');
+                }
+                if ($value['year_price'] == '') {
+                    return $this->jsonAdminResult([],10001, '物业涨幅年租金不能为空');
+                }
+            }
+        }
+
         $time = date('Y-m-d H:i:s');
         $res = $mHouse->where('id', $id)->update([
             'company_id' => $company_id,
@@ -276,12 +383,14 @@ class HouseController extends Controller
             'performance_bond' => $performance_bond,
             'pay_method' => $pay_method,
             'increase_type' => $increase_type,
+            'increase_content' => json_encode($increase_content),
             'property_contract_number' => $property_contract_number,
             'property_safety_person' => $property_safety_person,
             'property_contact_info' => $property_contact_info,
             'property_unit_price' => $property_unit_price,
             'property_pay_method' => $property_pay_method,
             'property_increase_type' => $property_increase_type,
+            'property_increase_content' => json_encode($property_increase_content),
             'updated_at' => $time
         ]);
 

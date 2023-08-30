@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Lease;
 use App\Http\Controllers\Admin\Controller;
 use App\Http\Traits\FormatTrait;
 use App\Model\Admin\Company;
+use App\Model\Admin\House;
 use App\Model\Admin\User;
 use Illuminate\Http\Request;
 
@@ -171,7 +172,7 @@ class CompanyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      **/
-    public function del(Request $request, Company $mCompany)
+    public function del(Request $request, Company $mCompany, House $mHouse)
     {
         $params = $request->all();
 
@@ -179,6 +180,11 @@ class CompanyController extends Controller
 
         if (empty($id)) {
             return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        $count = $mHouse->where('company_id', $id)->count();
+        if ($count > 0) {
+            return $this->jsonAdminResult([],10001,'租赁公司底下有租赁合同，不能删除');
         }
 
         $res = $mCompany->where('id', $id)->delete();
