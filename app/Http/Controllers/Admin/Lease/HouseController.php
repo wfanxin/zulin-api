@@ -54,6 +54,10 @@ class HouseController extends Controller
             $where[] = ['shop_number', 'like', '%' . $params['shop_number'] . '%'];
         }
 
+        if ($params['status'] != '') {
+            $where[] = ['status', '=', $params['status']];
+        }
+
         $orderField = 'id';
         $sort = 'desc';
         $page = $params['page'] ?? 1;
@@ -80,7 +84,8 @@ class HouseController extends Controller
             'data' => $data->items(),
             'company_list' => $company_list,
             'pay_method_list' => config('global.pay_method_list'),
-            'increase_type_list' => config('global.increase_type_list')
+            'increase_type_list' => config('global.increase_type_list'),
+            'status_options' => config('global.status_options')
         ]);
     }
 
@@ -172,9 +177,9 @@ class HouseController extends Controller
                 if ($value['unit_price'] == '') {
                     return $this->jsonAdminResult([],10001, '租金涨幅租金单价不能为空');
                 }
-                if ($value['year_price'] == '') {
+                /*if ($value['year_price'] == '') {
                     return $this->jsonAdminResult([],10001, '租金涨幅年租金不能为空');
-                }
+                }*/
             }
         }
 
@@ -197,9 +202,9 @@ class HouseController extends Controller
                 if ($value['unit_price'] == '') {
                     return $this->jsonAdminResult([],10001, '物业涨幅租金单价不能为空');
                 }
-                if ($value['year_price'] == '') {
+                /*if ($value['year_price'] == '') {
                     return $this->jsonAdminResult([],10001, '物业涨幅年租金不能为空');
-                }
+                }*/
             }
         }
 
@@ -337,9 +342,9 @@ class HouseController extends Controller
                 if ($value['unit_price'] == '') {
                     return $this->jsonAdminResult([],10001, '租金涨幅租金单价不能为空');
                 }
-                if ($value['year_price'] == '') {
+                /*if ($value['year_price'] == '') {
                     return $this->jsonAdminResult([],10001, '租金涨幅年租金不能为空');
-                }
+                }*/
             }
         }
 
@@ -362,9 +367,9 @@ class HouseController extends Controller
                 if ($value['unit_price'] == '') {
                     return $this->jsonAdminResult([],10001, '物业涨幅租金单价不能为空');
                 }
-                if ($value['year_price'] == '') {
+                /*if ($value['year_price'] == '') {
                     return $this->jsonAdminResult([],10001, '物业涨幅年租金不能为空');
-                }
+                }*/
             }
         }
 
@@ -393,6 +398,43 @@ class HouseController extends Controller
             'property_increase_content' => json_encode($property_increase_content),
             'updated_at' => $time
         ]);
+
+        if ($res) {
+            return $this->jsonAdminResultWithLog($request);
+        } else {
+            return $this->jsonAdminResult([],10001,'操作失败');
+        }
+    }
+
+    /**
+     * @name 租赁合同提交审核
+     * @Post("/lv/lease/house/submitReview")
+     * @Version("v1")
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     **/
+    public function submitReview(Request $request, House $mHouse)
+    {
+        $params = $request->all();
+
+        $id = $params['id'] ?? 0;
+
+        if (empty($id)) {
+            return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        $info = $mHouse->where('id', $id)->first();
+        $info = $this->dbResult($info);
+        if (empty($info)) {
+            return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        if (!in_array($info['status'], [0, 3])) {
+            return $this->jsonAdminResult([],10001,'不是待提交或审核失败状态');
+        }
+
+        $time = date('Y-m-d H:i:s');
+        $res = $mHouse->where('id', $id)->update(['status' => 1, 'updated_at' => $time]);
 
         if ($res) {
             return $this->jsonAdminResultWithLog($request);

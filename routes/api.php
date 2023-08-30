@@ -30,7 +30,13 @@ $dingoApi->version("v1", [
     $dingoApi->get("lease/house/list", \App\Http\Controllers\Admin\Lease\HouseController::class."@list")->name("lease.house.list");
     $dingoApi->post("lease/house/add", \App\Http\Controllers\Admin\Lease\HouseController::class."@add")->name("lease.house.add");
     $dingoApi->post("lease/house/edit", \App\Http\Controllers\Admin\Lease\HouseController::class."@edit")->name("lease.house.edit");
+    $dingoApi->post("lease/house/submitReview", \App\Http\Controllers\Admin\Lease\HouseController::class."@submitReview")->name("lease.house.submitReview");
     $dingoApi->post("lease/house/del", \App\Http\Controllers\Admin\Lease\HouseController::class."@del")->name("lease.house.del");
+
+    // 合同审批
+    $dingoApi->get("lease/approval/list", \App\Http\Controllers\Admin\Lease\ApprovalController::class."@list")->name("lease.approval.list");
+    $dingoApi->post("lease/approval/pass", \App\Http\Controllers\Admin\Lease\ApprovalController::class."@pass")->name("lease.approval.pass");
+    $dingoApi->post("lease/approval/fail", \App\Http\Controllers\Admin\Lease\ApprovalController::class."@fail")->name("lease.approval.fail");
 
     // 用户
     $dingoApi->post("users/checkName", \App\Http\Controllers\Admin\System\UserController::class."@checkName")->name("users.checkName");

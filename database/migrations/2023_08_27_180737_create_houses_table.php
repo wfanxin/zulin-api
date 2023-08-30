@@ -41,6 +41,8 @@ class CreateHousesTable extends Migration
             $table->tinyInteger('property_increase_type')->comment('物业涨幅方式：1、递增；2、自定义');
             $table->text('property_increase_content')->comment('物业涨幅详情');
 
+            $table->tinyInteger('status')->default(0)->comment('状态：0、待提交；1、审核中；2、审核通过；3、审核失败');
+
             $table->timestamps();
         });
     }
