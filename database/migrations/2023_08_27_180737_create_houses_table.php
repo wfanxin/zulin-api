@@ -42,6 +42,7 @@ class CreateHousesTable extends Migration
             $table->text('property_increase_content')->comment('物业涨幅详情');
 
             $table->tinyInteger('status')->default(0)->comment('状态：0、待提交；1、审核中；2、审核通过；3、审核失败');
+            $table->text('fail_reason')->comment('失败原因');
 
             $table->timestamps();
         });

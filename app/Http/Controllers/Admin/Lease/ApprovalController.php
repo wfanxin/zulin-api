@@ -141,9 +141,14 @@ class ApprovalController extends Controller
         $params = $request->all();
 
         $id = $params['id'] ?? 0;
+        $fail_reason = $params['fail_reason'] ?? '';
 
         if (empty($id)) {
             return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        if (empty($fail_reason)) {
+            return $this->jsonAdminResult([],10001,'审批失败原因不能为空');
         }
 
         $info = $mHouse->where('id', $id)->first();
@@ -157,7 +162,7 @@ class ApprovalController extends Controller
         }
 
         $time = date('Y-m-d H:i:s');
-        $res = $mHouse->where('id', $id)->update(['status' => 3, 'updated_at' => $time]);
+        $res = $mHouse->where('id', $id)->update(['status' => 3, 'fail_reason' => $fail_reason , 'updated_at' => $time]);
 
         if ($res) {
             return $this->jsonAdminResultWithLog($request);
