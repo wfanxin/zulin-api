@@ -38,6 +38,11 @@ $dingoApi->version("v1", [
     $dingoApi->post("lease/approval/pass", \App\Http\Controllers\Admin\Lease\ApprovalController::class."@pass")->name("lease.approval.pass");
     $dingoApi->post("lease/approval/fail", \App\Http\Controllers\Admin\Lease\ApprovalController::class."@fail")->name("lease.approval.fail");
 
+    // 公告管理
+    $dingoApi->get("lease/notice/list", \App\Http\Controllers\Admin\Lease\NoticeController::class."@list")->name("lease.notice.list");
+    $dingoApi->get("lease/notice/getNotice", \App\Http\Controllers\Admin\Lease\NoticeController::class."@getNotice")->name("lease.notice.getNotice");
+    $dingoApi->post("lease/notice/read", \App\Http\Controllers\Admin\Lease\NoticeController::class."@read")->name("lease.notice.read");
+
     // 用户
     $dingoApi->post("users/checkName", \App\Http\Controllers\Admin\System\UserController::class."@checkName")->name("users.checkName");
     $dingoApi->put("users/pwd", \App\Http\Controllers\Admin\System\UserController::class."@changePwd")->name("users.changePwd");

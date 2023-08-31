@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Controller;
 use App\Http\Traits\FormatTrait;
 use App\Model\Admin\Company;
 use App\Model\Admin\House;
+use App\Model\Admin\Notice;
 use App\Model\Admin\User;
 use Illuminate\Http\Request;
 
@@ -102,6 +103,7 @@ class ApprovalController extends Controller
     public function pass(Request $request, House $mHouse)
     {
         $params = $request->all();
+        $params['userId'] = $request->userId;
 
         $id = $params['id'] ?? 0;
 
@@ -136,9 +138,10 @@ class ApprovalController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      **/
-    public function fail(Request $request, House $mHouse)
+    public function fail(Request $request, House $mHouse, Notice $mNotice)
     {
         $params = $request->all();
+        $params['userId'] = $request->userId;
 
         $id = $params['id'] ?? 0;
         $fail_reason = $params['fail_reason'] ?? '';
@@ -165,6 +168,16 @@ class ApprovalController extends Controller
         $res = $mHouse->where('id', $id)->update(['status' => 3, 'fail_reason' => $fail_reason , 'updated_at' => $time]);
 
         if ($res) {
+            $mNotice->insert([
+                'title' => '审批不通过',
+                'source_table' => 'houses',
+                'source_id' => $id,
+                'from' => $params['userId'],
+                'to' => $info['user_id'],
+                'content' => $fail_reason,
+                'created_at' => $time,
+                'updated_at' => $time
+            ]);
             return $this->jsonAdminResultWithLog($request);
         } else {
             return $this->jsonAdminResult([],10001,'操作失败');
