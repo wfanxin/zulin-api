@@ -23,4 +23,8 @@ return [
         ['label' => '待审批', 'value' => 1],
         ['label' => '审批通过', 'value' => 2],
     ],
+    'read_status_options' => [
+        ['label' => '未读', 'value' => 0],
+        ['label' => '已读', 'value' => 1],
+    ]
 ];

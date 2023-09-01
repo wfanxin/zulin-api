@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
  * @name 公告信息
  * Class NoticeController
  * @package App\Http\Controllers\Admin\Lease
- * @PermissionWhiteList
  *
  * @Resource("notices")
  */
@@ -35,6 +34,10 @@ class NoticeController extends Controller
         $where = [];
         $where[] = ['to', '=', $params['userId']];
 
+        if ($params['is_read'] != '') {
+            $where[] = ['is_read', '=', $params['is_read']];
+        }
+
         $orderField = 'id';
         $sort = 'desc';
         $page = $params['page'] ?? 1;
@@ -43,10 +46,21 @@ class NoticeController extends Controller
             ->orderBy($orderField, $sort)
             ->paginate($pageSize, ['*'], 'page', $page);
 
+        // 发送人
+        if (!empty($data->items())) {
+            $user_ids = array_column($data->items(), 'from');
+            $user_list = $mUser->whereIn('id', $user_ids)->get();
+            $user_list = $this->dbResult($user_list);
+            $user_list = array_column($user_list, null, 'id');
+            foreach ($data->items() as $k => $v){
+                $data->items()[$k]['from_user_name'] = $user_list[$v->from]['name'] ?? '';
+            }
+        }
 
         return $this->jsonAdminResult([
             'total' => $data->total(),
-            'data' => $data->items()
+            'data' => $data->items(),
+            'read_status_options' => config('global.read_status_options')
         ]);
     }
 
@@ -54,6 +68,7 @@ class NoticeController extends Controller
      * @name 获取公告
      * @Get("/lv/lease/notice/getNotice")
      * @Version("v1")
+     * @PermissionWhiteList
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      **/
