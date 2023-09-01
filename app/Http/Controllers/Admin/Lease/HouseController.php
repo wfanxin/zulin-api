@@ -8,6 +8,8 @@ use App\Model\Admin\Company;
 use App\Model\Admin\House;
 use App\Model\Admin\User;
 use Illuminate\Http\Request;
+use App\Exports\HouseExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * @name 租赁合同
@@ -467,5 +469,47 @@ class HouseController extends Controller
         } else {
             return $this->jsonAdminResult([],10001,'操作失败');
         }
+    }
+
+    /**
+     * @name 导出excel
+     * @Post("/lv/lease/house/exportExcel")
+     * @Version("v1")
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     **/
+    public function exportExcel(Request $request, House $mHouse)
+    {
+        $params = $request->all();
+
+        $id = $params['id'] ?? 0;
+
+        if (empty($id)) {
+            return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        $info = $mHouse->where('id', $id)->first();
+        $info = $this->dbResult($info);
+        if (empty($info)) {
+            return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        $exportData = [];
+
+        $rootDir = config('filesystems.disks.public.root');
+        $file_name = '租赁合同' . $id;
+        $sendfilePath = 'admin/excel/' . $file_name . '.xls';
+        $tmpFileName = $rootDir . $sendfilePath;
+        if (is_file($tmpFileName)) {
+            unlink($tmpFileName);
+        }
+
+        $exportExcel = new HouseExport($exportData);
+        Excel::store($exportExcel, $sendfilePath, 'public', \Maatwebsite\Excel\Excel::XLS);
+
+        $excelUrl = config('filesystems.disks.public.url') . $sendfilePath;
+
+        // https://blog.csdn.net/json_ligege/article/details/119349004
+        return $this->jsonAdminResult(['excelUrl' => $excelUrl]);
     }
 }

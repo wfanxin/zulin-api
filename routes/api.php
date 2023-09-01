@@ -32,6 +32,7 @@ $dingoApi->version("v1", [
     $dingoApi->post("lease/house/edit", \App\Http\Controllers\Admin\Lease\HouseController::class."@edit")->name("lease.house.edit");
     $dingoApi->post("lease/house/submitReview", \App\Http\Controllers\Admin\Lease\HouseController::class."@submitReview")->name("lease.house.submitReview");
     $dingoApi->post("lease/house/del", \App\Http\Controllers\Admin\Lease\HouseController::class."@del")->name("lease.house.del");
+    $dingoApi->post("lease/house/exportExcel", \App\Http\Controllers\Admin\Lease\HouseController::class."@exportExcel")->name("lease.house.exportExcel");
 
     // 合同审批
     $dingoApi->get("lease/approval/list", \App\Http\Controllers\Admin\Lease\ApprovalController::class."@list")->name("lease.approval.list");

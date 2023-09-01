@@ -5,7 +5,7 @@ namespace App\Exports;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 
-class PropertyExport implements FromView
+class HouseExport implements FromView
 {
     protected $exportData;
     public function __construct(array $exportData)
@@ -17,7 +17,7 @@ class PropertyExport implements FromView
      */
     public function view(): View
     {
-        return view('exports.propertyExport', [
+        return view('exports.houseExport', [
             'exportData' => $this->exportData
         ]);
     }
