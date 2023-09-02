@@ -532,7 +532,18 @@ class HouseController extends Controller
 
             }
         } else { // 自定义
-
+            $increase_content = json_decode($exportData['increase_content'], true);
+            foreach ($increase_content as $key => $value) {
+                $index = $key + 1;
+                $detail_list[] = [
+                    'year' => $year_name_list[$index] ?? "第{$index}年",
+                    'area' => $exportData['lease_area'],
+                    'price' => sprintf("%.2f", $value['unit_price']),
+                    'year_price' => sprintf("%.2f", $value['unit_price'] * $exportData['lease_area'] * 365),
+                    'increase' => sprintf("%.2f", $value['unit_price']),
+                    'pay_method' => $pay_method_list[$exportData['pay_method']] ?? ''
+                ];
+            }
         }
         if (!empty($detail_list)) {
             $total_price = 0;
@@ -568,7 +579,18 @@ class HouseController extends Controller
                 $year_price = $year_price * (1 + 0.01 * $value['percent']);
             }
         } else { // 自定义
-
+            $property_increase_content = json_decode($exportData['property_increase_content'], true);
+            foreach ($property_increase_content as $key => $value) {
+                $index = $key + 1;
+                $property_detail_list[] = [
+                    'year' => $year_name_list[$index] ?? "第{$index}年",
+                    'area' => $exportData['lease_area'],
+                    'price' => sprintf("%.2f", $value['unit_price']),
+                    'year_price' => sprintf("%.2f", $value['unit_price'] * $exportData['lease_area'] * 12),
+                    'increase' => sprintf("%.2f", $value['unit_price']),
+                    'pay_method' => $pay_method_list[$exportData['property_pay_method']] ?? '',
+                ];
+            }
         }
         if (!empty($property_detail_list)) {
             $total_price = 0;
@@ -591,7 +613,7 @@ class HouseController extends Controller
         $sendfilePath = 'admin/excel/' . $file_name . '.xls';
         $tmpFileName = $rootDir . $sendfilePath;
         if (is_file($tmpFileName)) {
-            unlink($tmpFileName);
+             unlink($tmpFileName);
         }
 
         $exportExcel = new HouseExport($exportData);
@@ -599,7 +621,6 @@ class HouseController extends Controller
 
         $excelUrl = config('filesystems.disks.public.url') . $sendfilePath;
 
-        // https://blog.csdn.net/json_ligege/article/details/119349004
         return $this->jsonAdminResult(['excelUrl' => $excelUrl]);
     }
 }
