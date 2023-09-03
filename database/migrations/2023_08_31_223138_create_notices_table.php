@@ -22,6 +22,8 @@ class CreateNoticesTable extends Migration
             $table->integer('from')->default(0)->comment('发送人id');
             $table->integer('to')->default(0)->comment('接收人id');
             $table->text('content')->comment('内容');
+            $table->dateTime('notice_date')->comment('通知时间');
+            $table->tinyInteger('type')->comment('类型：1、审批；2、租金；3、物业费');
             $table->tinyInteger('is_read')->comment('是否已读：0、未读；1、已读');
 
             $table->timestamps();

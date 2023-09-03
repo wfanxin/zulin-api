@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Http\Traits\FormatTrait;
 use Illuminate\Support\Facades\DB;
 
-class Property extends Model
+class StatPrice extends Model
 {
     use FormatTrait;
-    public $table = 'propertys';
+    public $table = 'stat_prices';
 }

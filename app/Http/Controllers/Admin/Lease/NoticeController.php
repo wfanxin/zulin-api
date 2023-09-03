@@ -32,6 +32,7 @@ class NoticeController extends Controller
         $params['userId'] = $request->userId;
 
         $where = [];
+        $where[] = ['notice_date', '<=', date('Y-m-d H:i:s')];
         $where[] = ['to', '=', $params['userId']];
 
         if ($params['is_read'] != '') {
@@ -53,7 +54,7 @@ class NoticeController extends Controller
             $user_list = $this->dbResult($user_list);
             $user_list = array_column($user_list, null, 'id');
             foreach ($data->items() as $k => $v){
-                $data->items()[$k]['from_user_name'] = $user_list[$v->from]['name'] ?? '';
+                $data->items()[$k]['from_user_name'] = $user_list[$v->from]['name'] ?? 'system';
             }
         }
 
@@ -78,6 +79,7 @@ class NoticeController extends Controller
         $params['userId'] = $request->userId;
 
         $where = [];
+        $where[] = ['notice_date', '<=', date('Y-m-d H:i:s')];
         $where[] = ['to', '=', $params['userId']];
         $where[] = ['is_read', '=', 0];
 
@@ -112,7 +114,7 @@ class NoticeController extends Controller
         $info = $mNotice->where('id', $id)->first();
         $info = $this->dbResult($info);
         if (empty($info)) {
-            return $this->jsonAdminResult([],10001,'参数错误');
+            return $this->jsonAdminResult([]);
         }
 
         if ($info['to'] != $params['userId']) {

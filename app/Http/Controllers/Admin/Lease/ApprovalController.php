@@ -100,7 +100,7 @@ class ApprovalController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      **/
-    public function pass(Request $request, House $mHouse)
+    public function pass(Request $request, House $mHouse, Notice $mNotice)
     {
         $params = $request->all();
         $params['userId'] = $request->userId;
@@ -120,6 +120,8 @@ class ApprovalController extends Controller
         if (!in_array($info['status'], [1])) {
             return $this->jsonAdminResult([],10001,'不是待审批状态');
         }
+
+        $mNotice->addRent($info); // 添加租金和物业费通知
 
         $time = date('Y-m-d H:i:s');
         $res = $mHouse->where('id', $id)->update(['status' => 2, 'updated_at' => $time]);
@@ -175,6 +177,8 @@ class ApprovalController extends Controller
                 'from' => $params['userId'],
                 'to' => $info['user_id'],
                 'content' => $fail_reason,
+                'notice_date' => $time,
+                'type' => 1,
                 'created_at' => $time,
                 'updated_at' => $time
             ]);
