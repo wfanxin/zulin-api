@@ -140,7 +140,6 @@ class Notice extends Model
         $this->insert($insert_notice_list);
 
         // 年统计
-        $begin_year = date('Y', strtotime($house_info['stat_lease_date']));
         $days = intval((time() - strtotime($house_info['stat_lease_date'])) / (24 * 60 * 60));
         if ($days > 365) {
             $days = 365;
@@ -149,6 +148,7 @@ class Notice extends Model
 
         // 租金
         $before_price = 0;
+        $begin_year = date('Y', strtotime($house_info['stat_lease_date']));
         foreach ($stat_list as $value) {
             $after_price = sprintf("%.2f",$value / 365 * (365 - $days));
             $insert_stat_list[] = [
@@ -177,6 +177,7 @@ class Notice extends Model
 
         // 物业费
         $before_price = 0;
+        $begin_year = date('Y', strtotime($house_info['stat_lease_date']));
         foreach ($property_stat_list as $value) {
             $after_price = sprintf("%.2f",$value / 365 * (365 - $days));
             $insert_stat_list[] = [

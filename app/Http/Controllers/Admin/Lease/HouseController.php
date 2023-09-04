@@ -506,14 +506,14 @@ class HouseController extends Controller
         $exportData = $info;
         $exportData['increase_type_name'] = $increase_type_list[$exportData['increase_type']] ?? '';
         $exportData['property_increase_type_name'] = $increase_type_list[$exportData['property_increase_type']] ?? '';
+        $exportData['pay_method_name'] = $pay_method_list[$exportData['pay_method']] ?? '';
+        $exportData['property_pay_method_name'] = $pay_method_list[$exportData['property_pay_method']] ?? '';
 
         // 租金
         $detail_list = [];
         if ($exportData['increase_type'] == 1) { // 递增
             $increase_content = json_decode($exportData['increase_content'], true);
             $year_price = $exportData['unit_price'] * $exportData['lease_area'] * 365;
-            $begin_date = $exportData['stat_lease_date'];
-            $end_date = date('Y-m-d', strtotime("{$exportData['pay_method']} months", strtotime($begin_date)));
             foreach ($increase_content as $key => $value) {
                 $index = $key + 1;
                 $detail_list[] = [
@@ -523,13 +523,8 @@ class HouseController extends Controller
                     'year_price' => sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent'])),
                     'increase' => "{$value['percent']}%",
                     'pay_method' => $pay_method_list[$exportData['pay_method']] ?? '',
-                    'begin_date' => date('Y年m月d日', strtotime($begin_date)),
-                    'end_date' => date('Y年m月d日', strtotime($end_date)),
                 ];
                 $year_price = $year_price * (1 + 0.01 * $value['percent']);
-                $begin_date = $end_date;
-                $end_date = date('Y-m-d', strtotime("{$exportData['pay_method']} months", strtotime($begin_date)));
-
             }
         } else { // 自定义
             $increase_content = json_decode($exportData['increase_content'], true);
