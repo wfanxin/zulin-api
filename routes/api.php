@@ -44,6 +44,9 @@ $dingoApi->version("v1", [
     $dingoApi->get("lease/notice/getNotice", \App\Http\Controllers\Admin\Lease\NoticeController::class."@getNotice")->name("lease.notice.getNotice");
     $dingoApi->post("lease/notice/read", \App\Http\Controllers\Admin\Lease\NoticeController::class."@read")->name("lease.notice.read");
 
+    // 统计数据
+    $dingoApi->get("lease/statPrice/getData", \App\Http\Controllers\Admin\Lease\StatPriceController::class."@getData")->name("lease.statPrice.getData");
+
     // 用户
     $dingoApi->post("users/checkName", \App\Http\Controllers\Admin\System\UserController::class."@checkName")->name("users.checkName");
     $dingoApi->put("users/pwd", \App\Http\Controllers\Admin\System\UserController::class."@changePwd")->name("users.changePwd");
