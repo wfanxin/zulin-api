@@ -475,6 +475,7 @@ class HouseController extends Controller
      * @name 导出excel
      * @Post("/lv/lease/house/exportExcel")
      * @Version("v1")
+     * @PermissionWhiteList
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      **/
@@ -494,114 +495,8 @@ class HouseController extends Controller
             return $this->jsonAdminResult([],10001,'参数错误');
         }
 
-        // 配置信息
-        $increase_type_list = config('global.increase_type_list');
-        $increase_type_list = array_column($increase_type_list, 'label', 'value');
-        $year_name_list = config('global.year_name_list');
-        $year_name_list = array_column($year_name_list, 'label', 'value');
-        $pay_method_list = config('global.pay_method_list');
-        $pay_method_list = array_column($pay_method_list, 'label', 'value');
-
-        // 数据整理
-        $exportData = $info;
-        $exportData['increase_type_name'] = $increase_type_list[$exportData['increase_type']] ?? '';
-        $exportData['property_increase_type_name'] = $increase_type_list[$exportData['property_increase_type']] ?? '';
-        $exportData['pay_method_name'] = $pay_method_list[$exportData['pay_method']] ?? '';
-        $exportData['property_pay_method_name'] = $pay_method_list[$exportData['property_pay_method']] ?? '';
-
-        // 租金
-        $detail_list = [];
-        if ($exportData['increase_type'] == 1) { // 递增
-            $increase_content = json_decode($exportData['increase_content'], true);
-            $year_price = $exportData['unit_price'] * $exportData['lease_area'] * 365;
-            foreach ($increase_content as $key => $value) {
-                $index = $key + 1;
-                $detail_list[] = [
-                    'year' => $year_name_list[$index] ?? "第{$index}年",
-                    'area' => $exportData['lease_area'],
-                    'price' => sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent']) / $exportData['lease_area'] / 365),
-                    'year_price' => sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent'])),
-                    'increase' => "{$value['percent']}%",
-                    'pay_method' => $pay_method_list[$exportData['pay_method']] ?? '',
-                ];
-                $year_price = $year_price * (1 + 0.01 * $value['percent']);
-            }
-        } else { // 自定义
-            $increase_content = json_decode($exportData['increase_content'], true);
-            foreach ($increase_content as $key => $value) {
-                $index = $key + 1;
-                $detail_list[] = [
-                    'year' => $year_name_list[$index] ?? "第{$index}年",
-                    'area' => $exportData['lease_area'],
-                    'price' => sprintf("%.2f", $value['unit_price']),
-                    'year_price' => sprintf("%.2f", $value['unit_price'] * $exportData['lease_area'] * 365),
-                    'increase' => sprintf("%.2f", $value['unit_price']),
-                    'pay_method' => $pay_method_list[$exportData['pay_method']] ?? ''
-                ];
-            }
-        }
-        if (!empty($detail_list)) {
-            $total_price = 0;
-            foreach ($detail_list as $value) {
-                $total_price += $value['year_price'];
-            }
-            $detail_list[] = [
-                'year' => 'total',
-                'area' => $exportData['lease_area'],
-                'price' => sprintf("%.2f", $total_price / $exportData['lease_year'] / $exportData['lease_area'] / 365),
-                'year_price' => $total_price,
-                'increase' => '',
-                'pay_method' => ''
-            ];
-        }
-        $exportData['detail_list'] = $detail_list;
-
-        // 物业费
-        $property_detail_list = [];
-        if ($exportData['property_increase_type'] == 1) { // 递增
-            $property_increase_content = json_decode($exportData['property_increase_content'], true);
-            $year_price = $exportData['property_unit_price'] * $exportData['lease_area'] * 12;
-            foreach ($property_increase_content as $key => $value) {
-                $index = $key + 1;
-                $property_detail_list[] = [
-                    'year' => $year_name_list[$index] ?? "第{$index}年",
-                    'area' => $exportData['lease_area'],
-                    'price' => sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent']) / $exportData['lease_area'] / 12),
-                    'year_price' => sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent'])),
-                    'increase' => "{$value['percent']}%",
-                    'pay_method' => $pay_method_list[$exportData['property_pay_method']] ?? '',
-                ];
-                $year_price = $year_price * (1 + 0.01 * $value['percent']);
-            }
-        } else { // 自定义
-            $property_increase_content = json_decode($exportData['property_increase_content'], true);
-            foreach ($property_increase_content as $key => $value) {
-                $index = $key + 1;
-                $property_detail_list[] = [
-                    'year' => $year_name_list[$index] ?? "第{$index}年",
-                    'area' => $exportData['lease_area'],
-                    'price' => sprintf("%.2f", $value['unit_price']),
-                    'year_price' => sprintf("%.2f", $value['unit_price'] * $exportData['lease_area'] * 12),
-                    'increase' => sprintf("%.2f", $value['unit_price']),
-                    'pay_method' => $pay_method_list[$exportData['property_pay_method']] ?? '',
-                ];
-            }
-        }
-        if (!empty($property_detail_list)) {
-            $total_price = 0;
-            foreach ($property_detail_list as $value) {
-                $total_price += $value['year_price'];
-            }
-            $property_detail_list[] = [
-                'year' => 'total',
-                'area' => $exportData['lease_area'],
-                'price' => sprintf("%.2f", $total_price / $exportData['lease_year'] / $exportData['lease_area'] / 12),
-                'year_price' => $total_price,
-                'increase' => '',
-                'pay_method' => ''
-            ];
-        }
-        $exportData['property_detail_list'] = $property_detail_list;
+        // 格式化表格数据
+        $exportData = $mHouse->formatTableData($info);
 
         $rootDir = config('filesystems.disks.public.root');
         $file_name = '租赁合同' . $id;
@@ -617,5 +512,35 @@ class HouseController extends Controller
         $excelUrl = config('filesystems.disks.public.url') . $sendfilePath;
 
         return $this->jsonAdminResult(['excelUrl' => $excelUrl]);
+    }
+
+    /**
+     * @name 预览
+     * @Post("/lv/lease/house/preview")
+     * @Version("v1")
+     * @PermissionWhiteList
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     **/
+    public function preview(Request $request, House $mHouse)
+    {
+        $params = $request->all();
+
+        $id = $params['id'] ?? 0;
+
+        if (empty($id)) {
+            return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        $info = $mHouse->where('id', $id)->first();
+        $info = $this->dbResult($info);
+        if (empty($info)) {
+            return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        // 格式化表格数据
+        $exportData = $mHouse->formatTableData($info);
+
+        return view('exports/houseExport', ['exportData' => $exportData]);
     }
 }

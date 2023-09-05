@@ -11,6 +11,10 @@ class Notice extends Model
     use FormatTrait;
     public $table = 'notices';
 
+    /**
+     * 添加租金和物业费公告信息和年统计
+     * @param $house_info
+     */
     public function addRent($house_info) {
         $notice_list = [];
         $stat_list = [];

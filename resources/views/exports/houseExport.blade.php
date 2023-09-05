@@ -1,4 +1,4 @@
-<table border="1">
+<table border="0" cellspacing="0" style="width: 100%; color: #303133;">
     <tbody>
         <tr>
             <td colspan="9" valign="center" align="center" height="60px">租金</td>
@@ -17,13 +17,16 @@
         <tr>
             <td colspan="3" valign="center" align="left" height="30px">起始租期：{{$exportData['begin_lease_date']}}</td>
             <td colspan="3" valign="center" align="left" height="30px">计租日期：{{$exportData['stat_lease_date']}}</td>
+            <td colspan="3" valign="center" align="left" height="30px"></td>
         </tr>
         <tr>
             <td colspan="3" valign="center" align="left" height="30px">履约保证金：{{$exportData['performance_bond']}}</td>
             <td colspan="3" valign="center" align="left" height="30px">租金支付方式：{{$exportData['pay_method_name']}}</td>
+            <td colspan="3" valign="center" align="left" height="30px"></td>
         </tr>
-        <tr></tr>
-        <tr></tr>
+        <tr>
+            <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+        </tr>
         <tr>
             <td colspan="2" valign="center" align="center" height="30px">期限</td>
             <td colspan="2" valign="center" align="center" height="30px">租赁面积㎡</td>
@@ -40,8 +43,12 @@
                 <td colspan="1" valign="center" align="center" height="30px">{{$item['increase']}}</td>
             </tr>
         @endforeach
-        <tr></tr>
-        <tr></tr>
+        <tr>
+            <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+        </tr>
         <tr>
             <td colspan="9" valign="center" align="center" height="60px">物业费</td>
         </tr>
@@ -53,9 +60,11 @@
         <tr>
             <td colspan="3" valign="center" align="left" height="30px">联系方式：{{$exportData['property_contact_info']}}</td>
             <td colspan="3" valign="center" align="left" height="30px">物业费支付方式：{{$exportData['property_pay_method_name']}}</td>
+            <td colspan="3" valign="center" align="left" height="30px"></td>
         </tr>
-        <tr></tr>
-        <tr></tr>
+        <tr>
+            <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+        </tr>
         <tr>
             <td colspan="2" valign="center" align="center" height="30px">期限</td>
             <td colspan="2" valign="center" align="center" height="30px">租赁面积㎡</td>
