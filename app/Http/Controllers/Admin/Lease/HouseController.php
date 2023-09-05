@@ -140,6 +140,10 @@ class HouseController extends Controller
             return $this->jsonAdminResult([],10001, '租赁面积不能为空');
         }
 
+        if (empty($stat_lease_date)){
+            return $this->jsonAdminResult([],10001, '请选择计租日期');
+        }
+
         if (empty($lease_year)){
             return $this->jsonAdminResult([],10001, '租赁年限不能为空');
         }
@@ -303,6 +307,10 @@ class HouseController extends Controller
 
         if (empty($lease_area)){
             return $this->jsonAdminResult([],10001, '租赁面积不能为空');
+        }
+
+        if (empty($stat_lease_date)){
+            return $this->jsonAdminResult([],10001, '请选择计租日期');
         }
 
         if (empty($lease_year)){
