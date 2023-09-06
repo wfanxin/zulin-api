@@ -19,6 +19,17 @@ return [
             'alias' => '系统管理'
         ],
     ],
+    // 栏目
+    'nav_show_list' => [
+        '@Get:lv_lease_company_list',
+        '@Get:lv_lease_house_list',
+        '@Get:lv_lease_approval_list',
+        '@Get:lv_lease_notice_list',
+        '@Get:lv_permissions',
+        '@Get:lv_roles',
+        '@Get:lv_users',
+        '@Get:lv_logs'
+    ],
     'aliyun_oss' => [
         'AccessKeyId' => '',
         'AccessKeySecret' => '',

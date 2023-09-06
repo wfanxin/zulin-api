@@ -263,6 +263,10 @@ class Permission extends BaseModel
             }
         }
 
+        // 设置栏目
+        $nav_show_list = config('admin.nav_show_list');
+        $this->whereIn('path', $nav_show_list)->update(['is_show' => 1]);
+
         return 10000;
     }
 
