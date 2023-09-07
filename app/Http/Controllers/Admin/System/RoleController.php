@@ -72,6 +72,16 @@ class RoleController extends Controller
             }
         }
 
+        $mUser = new User();
+        $userInfo = $mUser->getCurUser($request->userId);
+        if (!in_array('admin', $userInfo['roles'])) { // 不是超级管理员
+            foreach ($data as $key => $value) {
+                if (in_array($value['name'], ['超级管理员', '管理组'])) {
+                    unset($data[$key]);
+                }
+            }
+        }
+
         return $this->jsonAdminResultWithLog($request, [
             'roles' => $data
         ]);

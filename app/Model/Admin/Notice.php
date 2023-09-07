@@ -21,7 +21,7 @@ class Notice extends Model
         if ($house_info['increase_type'] == 1) { // 递增
             $increase_content = json_decode($house_info['increase_content'], true);
             $year_price = $house_info['unit_price'] * $house_info['lease_area'] * 365;
-            $begin_date = $house_info['stat_lease_date'];
+            $begin_date = $house_info['begin_lease_date'];
             $begin_add_month = 0;
             foreach ($increase_content as $key => $value) {
                 $temp_year_price = sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent']));
@@ -39,7 +39,7 @@ class Notice extends Model
             }
         } else { // 自定义
             $increase_content = json_decode($house_info['increase_content'], true);
-            $begin_date = $house_info['stat_lease_date'];
+            $begin_date = $house_info['begin_lease_date'];
             $begin_add_month = 0;
             foreach ($increase_content as $key => $value) {
                 $temp_year_price = sprintf("%.2f", $value['unit_price'] * $house_info['lease_area'] * 365);
@@ -61,7 +61,7 @@ class Notice extends Model
         if ($house_info['property_increase_type'] == 1) { // 递增
             $property_increase_content = json_decode($house_info['property_increase_content'], true);
             $year_price = $house_info['property_unit_price'] * $house_info['lease_area'] * 12;
-            $begin_date = $house_info['stat_lease_date'];
+            $begin_date = $house_info['begin_lease_date'];
             $begin_add_month = 0;
             foreach ($property_increase_content as $key => $value) {
                 $temp_year_price = sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent']));
@@ -79,7 +79,7 @@ class Notice extends Model
             }
         } else { // 自定义
             $property_increase_content = json_decode($house_info['property_increase_content'], true);
-            $begin_date = $house_info['stat_lease_date'];
+            $begin_date = $house_info['begin_lease_date'];
             $begin_add_month = 0;
             foreach ($property_increase_content as $key => $value) {
                 $temp_year_price = sprintf("%.2f", $value['unit_price'] * $house_info['lease_area'] * 12);
@@ -144,7 +144,7 @@ class Notice extends Model
         $this->insert($insert_notice_list);
 
         // 年统计
-        $days = intval((time() - strtotime($house_info['stat_lease_date'])) / (24 * 60 * 60));
+        $days = intval((time() - strtotime($house_info['begin_lease_date'])) / (24 * 60 * 60));
         if ($days > 365) {
             $days = 365;
         }
@@ -152,7 +152,7 @@ class Notice extends Model
 
         // 租金
         $before_price = 0;
-        $begin_year = date('Y', strtotime($house_info['stat_lease_date']));
+        $begin_year = date('Y', strtotime($house_info['begin_lease_date']));
         foreach ($stat_list as $value) {
             $after_price = sprintf("%.2f",$value / 365 * (365 - $days));
             $insert_stat_list[] = [
@@ -181,7 +181,7 @@ class Notice extends Model
 
         // 物业费
         $before_price = 0;
-        $begin_year = date('Y', strtotime($house_info['stat_lease_date']));
+        $begin_year = date('Y', strtotime($house_info['begin_lease_date']));
         foreach ($property_stat_list as $value) {
             $after_price = sprintf("%.2f",$value / 365 * (365 - $days));
             $insert_stat_list[] = [

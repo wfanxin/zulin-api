@@ -39,8 +39,13 @@ class ApprovalController extends Controller
         }];
 
         $userInfo = $mUser->getCurUser($params['userId']);
-        if (!in_array('admin', $userInfo['roles'])) { // 不是超级管理员，查看自己创建的合同
-            $where[] = ['user_id', '=', $params['userId']];
+        if (!in_array('admin', $userInfo['roles'])) { // 不是超级管理员，查看自己创建租赁公司底下的合同
+            $company_ids = $mCompany->where('user_id', $params['userId'])->get();
+            $company_ids = $this->dbResult($company_ids);
+            $company_ids = array_column($company_ids, 'id');
+            $where[] = [function ($query) use ($company_ids) {
+                $query->whereIn('company_id', $company_ids);
+            }];
         }
 
         // 租赁合同
