@@ -20,6 +20,12 @@ $dingoApi->version("v1", [
     "middleware" => ["AdminToken", "CrossHttp"]
 ], function ($dingoApi) {
 
+    // 公司联盟
+    $dingoApi->get("lease/federation/list", \App\Http\Controllers\Admin\Lease\FederationController::class."@list")->name("lease.federation.list");
+    $dingoApi->post("lease/federation/add", \App\Http\Controllers\Admin\Lease\FederationController::class."@add")->name("lease.federation.add");
+    $dingoApi->post("lease/federation/edit", \App\Http\Controllers\Admin\Lease\FederationController::class."@edit")->name("lease.federation.edit");
+    $dingoApi->post("lease/federation/del", \App\Http\Controllers\Admin\Lease\FederationController::class."@del")->name("lease.federation.del");
+
     // 租赁公司
     $dingoApi->get("lease/company/list", \App\Http\Controllers\Admin\Lease\CompanyController::class."@list")->name("lease.company.list");
     $dingoApi->post("lease/company/add", \App\Http\Controllers\Admin\Lease\CompanyController::class."@add")->name("lease.company.add");

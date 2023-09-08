@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 /**
  * @name 金额统计
- * Class NoticeController
+ * Class StatPriceController
  * @package App\Http\Controllers\Admin\Lease
  * @PermissionWhiteList
  *
