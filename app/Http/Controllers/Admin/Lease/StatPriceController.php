@@ -45,21 +45,16 @@ class StatPriceController extends Controller
 
         $company_list = $mCompany->get(['id', 'company_name']);
         $company_list = $this->dbResult($company_list);
-
         $company_id = $params['company_id'] ?? '';
-        if (empty($company_id)) {
-            return $this->jsonAdminResult([
-                'chartData' => $chartData,
-                'property_chartData' => $property_chartData,
-                'company_list' => $company_list
-            ]);
-        }
 
         $where = [];
-        $where[] = ['company_id', $company_id];
         $where[] = [function ($query) {
             $query->whereIn('year', [date('Y') - 1, date('Y') + 0, date('Y') + 1]);
         }];
+
+        if (!empty($company_id)) {
+            $where[] = ['company_id', $company_id];
+        }
 
         $stat = $mStatPrice
             ->selectRaw('year, type, SUM(price) as price')
@@ -84,6 +79,13 @@ class StatPriceController extends Controller
             }
         }
 
+        // 柱形图格式数据 begin
+        $chartData['columns'] = array_merge(['year'], array_column($chartData['rows'], 'year'));
+        $chartData['rows'] = [array_merge(['year' => '年份'], array_column($chartData['rows'],'price','year'))];
+        $property_chartData['columns'] = array_merge(['year'], array_column($property_chartData['rows'], 'year'));
+        $property_chartData['rows'] = [array_merge(['year' => '年份'], array_column($property_chartData['rows'],'price','year'))];
+        // end
+        
         return $this->jsonAdminResult([
             'chartData' => $chartData,
             'property_chartData' => $property_chartData,

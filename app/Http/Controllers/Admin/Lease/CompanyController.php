@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Lease;
 use App\Http\Controllers\Admin\Controller;
 use App\Http\Traits\FormatTrait;
 use App\Model\Admin\Company;
+use App\Model\Admin\Federation;
 use App\Model\Admin\House;
 use App\Model\Admin\User;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class CompanyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      **/
-    public function list(Request $request, Company $mCompany, User $mUser)
+    public function list(Request $request, Company $mCompany, Federation $mFederation, User $mUser)
     {
         $params = $request->all();
         $params['userId'] = $request->userId;
@@ -37,6 +38,11 @@ class CompanyController extends Controller
         $userInfo = $mUser->getCurUser($params['userId']);
         if (!in_array('admin', $userInfo['roles'])) { // 不是超级管理员，查看自己创建的公司
             $where[] = ['user_id', '=', $params['userId']];
+        }
+
+        // 联盟id
+        if (!empty($params['federation_id'])){
+            $where[] = ['federation_id', '=', $params['federation_id']];
         }
 
         // 公司名称
@@ -52,20 +58,28 @@ class CompanyController extends Controller
             ->orderBy($orderField, $sort)
             ->paginate($pageSize, ['*'], 'page', $page);
 
-        // 用户名称
         if (!empty($data->items())) {
             $user_ids = array_column($data->items(), 'user_id');
             $user_list = $mUser->whereIn('id', $user_ids)->get();
             $user_list = $this->dbResult($user_list);
             $user_list = array_column($user_list, null, 'id');
+            $federation_ids = array_column($data->items(), 'federation_id');
+            $federation_list = $mFederation->whereIn('id', $federation_ids)->get();
+            $federation_list = $this->dbResult($federation_list);
+            $federation_list = array_column($federation_list, null, 'id');
             foreach ($data->items() as $k => $v){
-                $data->items()[$k]['user_name'] = $user_list[$v->user_id]['name'] ?? '';
+                $data->items()[$k]['user_name'] = $user_list[$v->user_id]['name'] ?? ''; // 用户名称
+                $data->items()[$k]['federation_name'] = $federation_list[$v->federation_id]['federation_name'] ?? ''; // 联盟名称
             }
         }
 
+        $federation_list = $mFederation->get(['id', 'federation_name']);
+        $federation_list = $this->dbResult($federation_list);
+
         return $this->jsonAdminResult([
             'total' => $data->total(),
-            'data' => $data->items()
+            'data' => $data->items(),
+            'federation_list' => $federation_list
         ]);
     }
 
@@ -81,6 +95,7 @@ class CompanyController extends Controller
         $params = $request->all();
         $params['userId'] = $request->userId;
 
+        $federation_id = $params['federation_id'] ?? 0;
         $company_name = $params['company_name'] ?? '';
         $company_address = $params['company_address'] ?? '';
         $contact_name = $params['contact_name'] ?? '';
@@ -100,6 +115,7 @@ class CompanyController extends Controller
         $time = date('Y-m-d H:i:s');
         $res = $mCompany->insert([
             'user_id' => $params['userId'],
+            'federation_id' => $federation_id,
             'company_name' => $company_name,
             'company_address' => $company_address,
             'contact_name' => $contact_name,
@@ -128,6 +144,7 @@ class CompanyController extends Controller
         $params = $request->all();
 
         $id = $params['id'] ?? 0;
+        $federation_id = $params['federation_id'] ?? 0;
         $company_name = $params['company_name'] ?? '';
         $company_address = $params['company_address'] ?? '';
         $contact_name = $params['contact_name'] ?? '';
@@ -150,6 +167,7 @@ class CompanyController extends Controller
 
         $time = date('Y-m-d H:i:s');
         $res = $mCompany->where('id', $id)->update([
+            'federation_id' => $federation_id,
             'company_name' => $company_name,
             'company_address' => $company_address,
             'contact_name' => $contact_name,
