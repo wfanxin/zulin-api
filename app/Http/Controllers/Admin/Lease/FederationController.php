@@ -6,7 +6,6 @@ use App\Http\Controllers\Admin\Controller;
 use App\Http\Traits\FormatTrait;
 use App\Model\Admin\Company;
 use App\Model\Admin\Federation;
-use App\Model\Admin\House;
 use App\Model\Admin\User;
 use Illuminate\Http\Request;
 
