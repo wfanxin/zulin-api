@@ -111,11 +111,13 @@ class HouseController extends Controller
         $stat_lease_date = $params['stat_lease_date'] ?? '';
         $lease_year = $params['lease_year'] ?? '';
         $repair_period = $params['repair_period'] ?? '';
+        $free_period = $params['free_period'] ?? '';
         $category = $params['category'] ?? '';
         $contract_number = $params['contract_number'] ?? '';
         $unit_price = $params['unit_price'] ?? '';
         $performance_bond = $params['performance_bond'] ?? '';
         $pay_method = $params['pay_method'] ?? '';
+        $rent_day = $params['rent_day'] ?? '';
         $increase_type = $params['increase_type'] ?? '';
         $increase_content = $params['increase_content'] ?? [];
 
@@ -125,6 +127,7 @@ class HouseController extends Controller
         $property_contact_info = $params['property_contact_info'] ?? '';
         $property_unit_price = $params['property_unit_price'] ?? '';
         $property_pay_method = $params['property_pay_method'] ?? '';
+        $property_rent_day = $params['property_rent_day'] ?? '';
         $property_increase_type = $params['property_increase_type'] ?? '';
         $property_increase_content = $params['property_increase_content'] ?? [];
 
@@ -160,12 +163,20 @@ class HouseController extends Controller
             return $this->jsonAdminResult([],10001, '请选择租金支付方式');
         }
 
+        if ($pay_method == -1 && $rent_day < 1) {
+            return $this->jsonAdminResult([],10001, '请输入租金计租日');
+        }
+
         if (empty($property_unit_price)){
             return $this->jsonAdminResult([],10001, '物业单价不能为空');
         }
 
         if (empty($property_pay_method)){
             return $this->jsonAdminResult([],10001, '请选择物业支付方式');
+        }
+
+        if ($property_pay_method == -1 && $property_rent_day < 1) {
+            return $this->jsonAdminResult([],10001, '请输入物业计租日');
         }
 
         if (!in_array($increase_type, [1, 2])) {
@@ -228,11 +239,13 @@ class HouseController extends Controller
             'stat_lease_date' => $stat_lease_date,
             'lease_year' => $lease_year,
             'repair_period' => $repair_period,
+            'free_period' => $free_period,
             'category' => $category,
             'contract_number' => $contract_number,
             'unit_price' => $unit_price,
             'performance_bond' => $performance_bond,
             'pay_method' => $pay_method,
+            'rent_day' => $rent_day,
             'increase_type' => $increase_type,
             'increase_content' => json_encode($increase_content),
             'property_contract_number' => $property_contract_number,
@@ -240,6 +253,7 @@ class HouseController extends Controller
             'property_contact_info' => $property_contact_info,
             'property_unit_price' => $property_unit_price,
             'property_pay_method' => $property_pay_method,
+            'property_rent_day' => $property_rent_day,
             'property_increase_type' => $property_increase_type,
             'property_increase_content' => json_encode($property_increase_content),
             'created_at' => $time,
@@ -284,11 +298,13 @@ class HouseController extends Controller
         $stat_lease_date = $params['stat_lease_date'] ?? '';
         $lease_year = $params['lease_year'] ?? '';
         $repair_period = $params['repair_period'] ?? '';
+        $free_period = $params['free_period'] ?? '';
         $category = $params['category'] ?? '';
         $contract_number = $params['contract_number'] ?? '';
         $unit_price = $params['unit_price'] ?? '';
         $performance_bond = $params['performance_bond'] ?? '';
         $pay_method = $params['pay_method'] ?? '';
+        $rent_day = $params['rent_day'] ?? '';
         $increase_type = $params['increase_type'] ?? '';
         $increase_content = $params['increase_content'] ?? [];
 
@@ -298,6 +314,7 @@ class HouseController extends Controller
         $property_contact_info = $params['property_contact_info'] ?? '';
         $property_unit_price = $params['property_unit_price'] ?? '';
         $property_pay_method = $params['property_pay_method'] ?? '';
+        $property_rent_day = $params['property_rent_day'] ?? '';
         $property_increase_type = $params['property_increase_type'] ?? '';
         $property_increase_content = $params['property_increase_content'] ?? [];
 
@@ -333,12 +350,20 @@ class HouseController extends Controller
             return $this->jsonAdminResult([],10001, '请选择租金支付方式');
         }
 
+        if ($pay_method == -1 && $rent_day < 1) {
+            return $this->jsonAdminResult([],10001, '请输入租金计租日');
+        }
+
         if (empty($property_unit_price)){
             return $this->jsonAdminResult([],10001, '物业单价不能为空');
         }
 
         if (empty($property_pay_method)){
             return $this->jsonAdminResult([],10001, '请选择物业支付方式');
+        }
+
+        if ($property_pay_method == -1 && $property_rent_day < 1) {
+            return $this->jsonAdminResult([],10001, '请输入物业计租日');
         }
 
         if (!in_array($increase_type, [1, 2])) {
@@ -400,11 +425,13 @@ class HouseController extends Controller
             'stat_lease_date' => $stat_lease_date,
             'lease_year' => $lease_year,
             'repair_period' => $repair_period,
+            'free_period' => $free_period,
             'category' => $category,
             'contract_number' => $contract_number,
             'unit_price' => $unit_price,
             'performance_bond' => $performance_bond,
             'pay_method' => $pay_method,
+            'rent_day' => $rent_day,
             'increase_type' => $increase_type,
             'increase_content' => json_encode($increase_content),
             'property_contract_number' => $property_contract_number,
@@ -412,6 +439,7 @@ class HouseController extends Controller
             'property_contact_info' => $property_contact_info,
             'property_unit_price' => $property_unit_price,
             'property_pay_method' => $property_pay_method,
+            'property_rent_day' => $property_rent_day,
             'property_increase_type' => $property_increase_type,
             'property_increase_content' => json_encode($property_increase_content),
             'updated_at' => $time

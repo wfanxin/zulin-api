@@ -17,12 +17,12 @@
         <tr>
             <td colspan="3" valign="center" align="left" height="30px">起始租期：{{$exportData['begin_lease_date']}}</td>
             <td colspan="3" valign="center" align="left" height="30px">计租日期：{{$exportData['stat_lease_date']}}</td>
-            <td colspan="3" valign="center" align="left" height="30px"></td>
+            <td colspan="3" valign="center" align="left" height="30px">免租经营期：{{$exportData['free_period']}}</td>
         </tr>
         <tr>
             <td colspan="3" valign="center" align="left" height="30px">履约保证金：{{$exportData['performance_bond']}}</td>
             <td colspan="3" valign="center" align="left" height="30px">租金支付方式：{{$exportData['pay_method_name']}}</td>
-            <td colspan="3" valign="center" align="left" height="30px"></td>
+            <td colspan="3" valign="center" align="left" height="30px">{{$exportData['pay_method'] == -1 ? '租金计租日：' : ''}}{{$exportData['pay_method'] == -1 ? $exportData['rent_day'] : ''}}</td>
         </tr>
         <tr>
             <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
@@ -60,7 +60,7 @@
         <tr>
             <td colspan="3" valign="center" align="left" height="30px">联系方式：{{$exportData['property_contact_info']}}</td>
             <td colspan="3" valign="center" align="left" height="30px">物业费支付方式：{{$exportData['property_pay_method_name']}}</td>
-            <td colspan="3" valign="center" align="left" height="30px"></td>
+            <td colspan="3" valign="center" align="left" height="30px">{{$exportData['property_pay_method'] == -1 ? '物业计租日：' : ''}}{{$exportData['property_pay_method'] == -1 ? $exportData['property_rent_day'] : ''}}</td>
         </tr>
         <tr>
             <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>

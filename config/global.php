@@ -4,6 +4,7 @@ return [
     'page_size' => 20,
 
     'pay_method_list' => [
+        ['label' => '短租', 'value' => -1],
         ['label' => '月', 'value' => 1],
         ['label' => '季度', 'value' => 3],
         ['label' => '半年', 'value' => 6],
