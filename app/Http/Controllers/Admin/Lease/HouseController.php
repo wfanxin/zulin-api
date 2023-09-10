@@ -531,6 +531,44 @@ class HouseController extends Controller
     }
 
     /**
+     * @name 详情
+     * @Get("/lv/lease/house/detail")
+     * @Version("v1")
+     * @PermissionWhiteList
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     **/
+    public function detail(Request $request, House $mHouse, Company $mCompany)
+    {
+        $params = $request->all();
+
+        $id = $params['id'] ?? 0;
+
+        if (empty($id)) {
+            return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        $info = $mHouse->where('id', $id)->first();
+        $info = $this->dbResult($info);
+        if (empty($info)) {
+            return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        $info['increase_content'] = json_decode($info['increase_content'], true) ?? [];
+        $info['property_increase_content'] = json_decode($info['property_increase_content'], true) ?? [];
+
+        $company_list = $mCompany->get(['id', 'company_name']);
+        $company_list = $this->dbResult($company_list);
+
+        return $this->jsonAdminResult([
+            'data' => $info,
+            'company_list' => $company_list,
+            'pay_method_list' => config('global.pay_method_list'),
+            'increase_type_list' => config('global.increase_type_list')
+        ]);
+    }
+
+    /**
      * @name 预览
      * @Post("/lv/lease/house/preview")
      * @Version("v1")

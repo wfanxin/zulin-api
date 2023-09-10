@@ -39,6 +39,7 @@ $dingoApi->version("v1", [
     $dingoApi->post("lease/house/submitReview", \App\Http\Controllers\Admin\Lease\HouseController::class."@submitReview")->name("lease.house.submitReview");
     $dingoApi->post("lease/house/del", \App\Http\Controllers\Admin\Lease\HouseController::class."@del")->name("lease.house.del");
     $dingoApi->post("lease/house/exportExcel", \App\Http\Controllers\Admin\Lease\HouseController::class."@exportExcel")->name("lease.house.exportExcel");
+    $dingoApi->get("lease/house/detail", \App\Http\Controllers\Admin\Lease\HouseController::class."@detail")->name("lease.house.detail");
     $dingoApi->post("lease/house/preview", \App\Http\Controllers\Admin\Lease\HouseController::class."@preview")->name("lease.house.preview");
 
     // 合同审批
