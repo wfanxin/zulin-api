@@ -41,6 +41,7 @@ class House extends Model
                     'year' => $year_name_list[$index] ?? "第{$index}年",
                     'area' => $exportData['lease_area'],
                     'price' => sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent']) / $exportData['lease_area'] / 365),
+                    'month_price' => sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent']) / $exportData['lease_area'] / 12),
                     'year_price' => sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent'])),
                     'increase' => "{$value['percent']}%",
                     'pay_method' => $pay_method_list[$exportData['pay_method']] ?? '',
@@ -55,6 +56,7 @@ class House extends Model
                     'year' => $year_name_list[$index] ?? "第{$index}年",
                     'area' => $exportData['lease_area'],
                     'price' => sprintf("%.2f", $value['unit_price']),
+                    'month_price' => sprintf("%.2f", $value['unit_price'] * 365 / 12),
                     'year_price' => sprintf("%.2f", $value['unit_price'] * $exportData['lease_area'] * 365),
                     'increase' => sprintf("%.2f", $value['unit_price']),
                     'pay_method' => $pay_method_list[$exportData['pay_method']] ?? ''
@@ -70,6 +72,7 @@ class House extends Model
                 'year' => 'total',
                 'area' => $exportData['lease_area'],
                 'price' => sprintf("%.2f", $total_price / $exportData['lease_year'] / $exportData['lease_area'] / 365),
+                'month_price' => sprintf("%.2f", $total_price / $exportData['lease_year'] / $exportData['lease_area'] / 12),
                 'year_price' => $total_price,
                 'increase' => '',
                 'pay_method' => ''

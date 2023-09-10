@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
  * Class LogController
  * @package App\Http\Controllers\Admin\System
  *
- * @PermissionWhiteList
  * @Resource("logs")
  */
 class LogController extends Controller

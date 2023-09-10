@@ -21,6 +21,7 @@ return [
     ],
     // 栏目
     'nav_show_list' => [
+        '@Get:lv_lease_federation_list',
         '@Get:lv_lease_company_list',
         '@Get:lv_lease_house_list',
         '@Get:lv_lease_approval_list',

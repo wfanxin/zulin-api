@@ -30,7 +30,7 @@
         <tr>
             <td colspan="2" valign="center" align="center" height="30px">期限</td>
             <td colspan="2" valign="center" align="center" height="30px">租赁面积㎡</td>
-            <td colspan="2" valign="center" align="center" height="30px">租金单价元/㎡/日</td>
+            <td colspan="2" valign="center" align="center" height="30px">租金单价元/㎡/日(月)</td>
             <td colspan="2" valign="center" align="center" height="30px">年租金</td>
             <td colspan="1" valign="center" align="center" height="30px">{{$exportData['increase_type_name']}}</td>
         </tr>
@@ -38,7 +38,7 @@
             <tr>
                 <td colspan="2" valign="center" align="center" height="30px">{{$item['year']}}</td>
                 <td colspan="2" valign="center" align="center" height="30px">{{$item['area']}}</td>
-                <td colspan="2" valign="center" align="center" height="30px">{{$item['price']}}</td>
+                <td colspan="2" valign="center" align="center" height="30px">{{$item['price']}}({{$item['month_price']}})</td>
                 <td colspan="2" valign="center" align="center" height="30px">{{$item['year_price']}}</td>
                 <td colspan="1" valign="center" align="center" height="30px">{{$item['increase']}}</td>
             </tr>
