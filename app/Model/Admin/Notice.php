@@ -23,12 +23,43 @@ class Notice extends Model
             $year_price = $house_info['unit_price'] * $house_info['lease_area'] * 365;
             $begin_date = $house_info['stat_lease_date'];
             $begin_add_month = 0;
+            $begin_add_day = 0;
+            $over_days = 0;
+            $over_day_price = 0; // 剩余金额
             foreach ($increase_content as $key => $value) {
                 $temp_year_price = sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent']));
                 $year_price = $year_price * (1 + 0.01 * $value['percent']);
                 $stat_list[] = $temp_year_price;
                 if ($house_info['pay_method'] == -1) {
+                    $begin_date_end = date('Y-m-d', strtotime(($key + 1) . ' year', strtotime($begin_date)));
+                    $year_all_days = (strtotime(($key + 1) . ' year', strtotime($begin_date)) - strtotime($key . ' year', strtotime($begin_date))) / (24 * 60 * 60); // 当年的天数
+                    while (true) {
+                        $temp_begin_date = date('Y-m-d', strtotime("{$begin_add_day} days", strtotime($begin_date)));
+                        $over_days += (strtotime($begin_date_end) - strtotime($temp_begin_date)) / (24 * 60 * 60); // 剩余天数
+                        if ($over_days < $house_info['rent_day']) { // 剩余天数不够
+                            $over_day_price = sprintf("%.2f",$temp_year_price * $over_days / $year_all_days); // 剩余金额
+                            if ($key + 1 == count($increase_content)) {
+                                $notice_list[] = [
+                                    'price' => $over_day_price,
+                                    'begin_date' => $temp_begin_date
+                                ];
+                            }
+                            break;
+                        }
+                        if ($over_day_price > 0) {
+                            $count_rent_day = $house_info['rent_day'] - ($over_days - (strtotime($begin_date_end) - strtotime($temp_begin_date)) / (24 * 60 * 60));
+                        } else {
+                            $count_rent_day = $house_info['rent_day'];
+                        }
+                        $notice_list[] = [
+                            'price' => sprintf("%.2f",$temp_year_price * $count_rent_day / $year_all_days) + $over_day_price,
+                            'begin_date' => $temp_begin_date
+                        ];
 
+                        $begin_add_day += $house_info['rent_day'];
+                        $over_days = 0;
+                        $over_day_price = 0;
+                    }
                 } else {
                     $pay_method_count = 12 / $house_info['pay_method'];
                     while ($pay_method_count--) {
@@ -45,11 +76,42 @@ class Notice extends Model
             $increase_content = json_decode($house_info['increase_content'], true);
             $begin_date = $house_info['stat_lease_date'];
             $begin_add_month = 0;
+            $begin_add_day = 0;
+            $over_days = 0;
+            $over_day_price = 0; // 剩余金额
             foreach ($increase_content as $key => $value) {
                 $temp_year_price = sprintf("%.2f", $value['unit_price'] * $house_info['lease_area'] * 365);
                 $stat_list[] = $temp_year_price;
                 if ($house_info['pay_method'] == -1) {
+                    $begin_date_end = date('Y-m-d', strtotime(($key + 1) . ' year', strtotime($begin_date)));
+                    $year_all_days = (strtotime(($key + 1) . ' year', strtotime($begin_date)) - strtotime($key . ' year', strtotime($begin_date))) / (24 * 60 * 60); // 当年的天数
+                    while (true) {
+                        $temp_begin_date = date('Y-m-d', strtotime("{$begin_add_day} days", strtotime($begin_date)));
+                        $over_days += (strtotime($begin_date_end) - strtotime($temp_begin_date)) / (24 * 60 * 60); // 剩余天数
+                        if ($over_days < $house_info['rent_day']) { // 剩余天数不够
+                            $over_day_price = sprintf("%.2f",$temp_year_price * $over_days / $year_all_days); // 剩余金额
+                            if ($key + 1 == count($increase_content)) {
+                                $notice_list[] = [
+                                    'price' => $over_day_price,
+                                    'begin_date' => $temp_begin_date
+                                ];
+                            }
+                            break;
+                        }
+                        if ($over_day_price > 0) {
+                            $count_rent_day = $house_info['rent_day'] - ($over_days - (strtotime($begin_date_end) - strtotime($temp_begin_date)) / (24 * 60 * 60));
+                        } else {
+                            $count_rent_day = $house_info['rent_day'];
+                        }
+                        $notice_list[] = [
+                            'price' => sprintf("%.2f",$temp_year_price * $count_rent_day / $year_all_days) + $over_day_price,
+                            'begin_date' => $temp_begin_date
+                        ];
 
+                        $begin_add_day += $house_info['rent_day'];
+                        $over_days = 0;
+                        $over_day_price = 0;
+                    }
                 } else {
                     $pay_method_count = 12 / $house_info['pay_method'];
                     while ($pay_method_count--) {
@@ -71,17 +133,48 @@ class Notice extends Model
             $year_price = $house_info['property_unit_price'] * $house_info['lease_area'] * 12;
             $begin_date = $house_info['stat_lease_date'];
             $begin_add_month = 0;
+            $begin_add_day = 0;
+            $over_days = 0;
+            $over_day_price = 0; // 剩余金额
             foreach ($property_increase_content as $key => $value) {
                 $temp_year_price = sprintf("%.2f", $year_price * (1 + 0.01 * $value['percent']));
                 $year_price = $year_price * (1 + 0.01 * $value['percent']);
                 $property_stat_list[] = $temp_year_price;
                 if ($house_info['property_pay_method'] == -1) {
+                    $begin_date_end = date('Y-m-d', strtotime(($key + 1) . ' year', strtotime($begin_date)));
+                    $year_all_days = (strtotime(($key + 1) . ' year', strtotime($begin_date)) - strtotime($key . ' year', strtotime($begin_date))) / (24 * 60 * 60); // 当年的天数
+                    while (true) {
+                        $temp_begin_date = date('Y-m-d', strtotime("{$begin_add_day} days", strtotime($begin_date)));
+                        $over_days += (strtotime($begin_date_end) - strtotime($temp_begin_date)) / (24 * 60 * 60); // 剩余天数
+                        if ($over_days < $house_info['property_rent_day']) { // 剩余天数不够
+                            $over_day_price = sprintf("%.2f",$temp_year_price * $over_days / $year_all_days); // 剩余金额
+                            if ($key + 1 == count($increase_content)) {
+                                $property_notice_list[] = [
+                                    'price' => $over_day_price,
+                                    'begin_date' => $temp_begin_date
+                                ];
+                            }
+                            break;
+                        }
+                        if ($over_day_price > 0) {
+                            $count_rent_day = $house_info['property_rent_day'] - ($over_days - (strtotime($begin_date_end) - strtotime($temp_begin_date)) / (24 * 60 * 60));
+                        } else {
+                            $count_rent_day = $house_info['property_rent_day'];
+                        }
+                        $property_notice_list[] = [
+                            'price' => sprintf("%.2f",$temp_year_price * $count_rent_day / $year_all_days) + $over_day_price,
+                            'begin_date' => $temp_begin_date
+                        ];
 
+                        $begin_add_day += $house_info['property_rent_day'];
+                        $over_days = 0;
+                        $over_day_price = 0;
+                    }
                 } else {
                     $pay_method_count = 12 / $house_info['property_pay_method'];
                     while ($pay_method_count--) {
                         $temp_begin_date = date('Y-m-d', strtotime("{$begin_add_month} months", strtotime($begin_date)));
-                        $begin_add_month += $house_info['pay_method'];
+                        $begin_add_month += $house_info['property_pay_method'];
                         $property_notice_list[] = [
                             'price' => sprintf("%.2f",$temp_year_price * $house_info['property_pay_method'] / 12),
                             'begin_date' => $temp_begin_date
@@ -93,16 +186,47 @@ class Notice extends Model
             $property_increase_content = json_decode($house_info['property_increase_content'], true);
             $begin_date = $house_info['stat_lease_date'];
             $begin_add_month = 0;
+            $begin_add_day = 0;
+            $over_days = 0;
+            $over_day_price = 0; // 剩余金额
             foreach ($property_increase_content as $key => $value) {
                 $temp_year_price = sprintf("%.2f", $value['unit_price'] * $house_info['lease_area'] * 12);
                 $property_stat_list[] = $temp_year_price;
                 if ($house_info['property_pay_method'] == -1) {
+                    $begin_date_end = date('Y-m-d', strtotime(($key + 1) . ' year', strtotime($begin_date)));
+                    $year_all_days = (strtotime(($key + 1) . ' year', strtotime($begin_date)) - strtotime($key . ' year', strtotime($begin_date))) / (24 * 60 * 60); // 当年的天数
+                    while (true) {
+                        $temp_begin_date = date('Y-m-d', strtotime("{$begin_add_day} days", strtotime($begin_date)));
+                        $over_days += (strtotime($begin_date_end) - strtotime($temp_begin_date)) / (24 * 60 * 60); // 剩余天数
+                        if ($over_days < $house_info['property_rent_day']) { // 剩余天数不够
+                            $over_day_price = sprintf("%.2f",$temp_year_price * $over_days / $year_all_days); // 剩余金额
+                            if ($key + 1 == count($increase_content)) {
+                                $property_notice_list[] = [
+                                    'price' => $over_day_price,
+                                    'begin_date' => $temp_begin_date
+                                ];
+                            }
+                            break;
+                        }
+                        if ($over_day_price > 0) {
+                            $count_rent_day = $house_info['property_rent_day'] - ($over_days - (strtotime($begin_date_end) - strtotime($temp_begin_date)) / (24 * 60 * 60));
+                        } else {
+                            $count_rent_day = $house_info['property_rent_day'];
+                        }
+                        $property_notice_list[] = [
+                            'price' => sprintf("%.2f",$temp_year_price * $count_rent_day / $year_all_days) + $over_day_price,
+                            'begin_date' => $temp_begin_date
+                        ];
 
+                        $begin_add_day += $house_info['property_rent_day'];
+                        $over_days = 0;
+                        $over_day_price = 0;
+                    }
                 } else {
                     $pay_method_count = 12 / $house_info['property_pay_method'];
                     while ($pay_method_count--) {
                         $temp_begin_date = date('Y-m-d', strtotime("{$begin_add_month} months", strtotime($begin_date)));
-                        $begin_add_month += $house_info['pay_method'];
+                        $begin_add_month += $house_info['property_pay_method'];
                         $property_notice_list[] = [
                             'price' => sprintf("%.2f",$temp_year_price * $house_info['property_pay_method'] / 12),
                             'begin_date' => $temp_begin_date
