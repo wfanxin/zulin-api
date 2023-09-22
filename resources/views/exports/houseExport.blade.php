@@ -46,40 +46,42 @@
         <tr>
             <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
         </tr>
-        <tr>
-            <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td colspan="9" valign="center" align="center" height="60px">物业费</td>
-        </tr>
-        <tr>
-            <td colspan="3" valign="center" align="left" height="30px">商铺号：{{$exportData['shop_number']}}</td>
-            <td colspan="3" valign="center" align="left" height="30px">物业合同编号：{{$exportData['property_contract_number']}}</td>
-            <td colspan="3" valign="center" align="left" height="30px">安全责任人：{{$exportData['property_safety_person']}}</td>
-        </tr>
-        <tr>
-            <td colspan="3" valign="center" align="left" height="30px">联系方式：{{$exportData['property_contact_info']}}</td>
-            <td colspan="3" valign="center" align="left" height="30px">物业费支付方式：{{$exportData['property_pay_method_name']}}</td>
-            <td colspan="3" valign="center" align="left" height="30px">{{$exportData['property_pay_method'] == -1 ? '物业计租日：' : ''}}{{$exportData['property_pay_method'] == -1 ? $exportData['property_rent_day'] : ''}}</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
-        </tr>
-        <tr>
-            <td colspan="2" valign="center" align="center" height="30px">期限</td>
-            <td colspan="2" valign="center" align="center" height="30px">租赁面积㎡</td>
-            <td colspan="2" valign="center" align="center" height="30px">物业费单价元/㎡/月</td>
-            <td colspan="2" valign="center" align="center" height="30px">年物业费</td>
-            <td colspan="1" valign="center" align="center" height="30px">{{$exportData['property_increase_type_name']}}</td>
-        </tr>
-        @foreach($exportData['property_detail_list'] as $k => $item)
+        @if($exportData['has_property'])
             <tr>
-                <td colspan="2" valign="center" align="center" height="30px">{{$item['year']}}</td>
-                <td colspan="2" valign="center" align="center" height="30px">{{$item['area']}}</td>
-                <td colspan="2" valign="center" align="center" height="30px">{{$item['price']}}</td>
-                <td colspan="2" valign="center" align="center" height="30px">{{$item['year_price']}}</td>
-                <td colspan="1" valign="center" align="center" height="30px">{{$item['increase']}}</td>
+                <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
             </tr>
-        @endforeach
+            <tr>
+                <td colspan="9" valign="center" align="center" height="60px">物业费</td>
+            </tr>
+            <tr>
+                <td colspan="3" valign="center" align="left" height="30px">商铺号：{{$exportData['shop_number']}}</td>
+                <td colspan="3" valign="center" align="left" height="30px">物业合同编号：{{$exportData['property_contract_number']}}</td>
+                <td colspan="3" valign="center" align="left" height="30px">安全责任人：{{$exportData['property_safety_person']}}</td>
+            </tr>
+            <tr>
+                <td colspan="3" valign="center" align="left" height="30px">联系方式：{{$exportData['property_contact_info']}}</td>
+                <td colspan="3" valign="center" align="left" height="30px">物业费支付方式：{{$exportData['property_pay_method_name']}}</td>
+                <td colspan="3" valign="center" align="left" height="30px">{{$exportData['property_pay_method'] == -1 ? '物业计租日：' : ''}}{{$exportData['property_pay_method'] == -1 ? $exportData['property_rent_day'] : ''}}</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2" valign="center" align="center" height="30px">期限</td>
+                <td colspan="2" valign="center" align="center" height="30px">租赁面积㎡</td>
+                <td colspan="2" valign="center" align="center" height="30px">物业费单价元/㎡/月</td>
+                <td colspan="2" valign="center" align="center" height="30px">年物业费</td>
+                <td colspan="1" valign="center" align="center" height="30px">{{$exportData['property_increase_type_name']}}</td>
+            </tr>
+            @foreach($exportData['property_detail_list'] as $k => $item)
+                <tr>
+                    <td colspan="2" valign="center" align="center" height="30px">{{$item['year']}}</td>
+                    <td colspan="2" valign="center" align="center" height="30px">{{$item['area']}}</td>
+                    <td colspan="2" valign="center" align="center" height="30px">{{$item['price']}}</td>
+                    <td colspan="2" valign="center" align="center" height="30px">{{$item['year_price']}}</td>
+                    <td colspan="1" valign="center" align="center" height="30px">{{$item['increase']}}</td>
+                </tr>
+            @endforeach
+        @endif
     </tbody>
 </table>

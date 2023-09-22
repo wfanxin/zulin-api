@@ -85,6 +85,8 @@ class ApprovalController extends Controller
                 $data->items()[$k]['company_name'] = $company_arr[$v->company_id]['company_name'] ?? '';
                 $data->items()[$k]['increase_content'] = json_decode($v->increase_content, true) ?? [];
                 $data->items()[$k]['property_increase_content'] = json_decode($v->property_increase_content, true) ?? [];
+                $data->items()[$k]['property_unit_price'] = $v->property_unit_price == 0 ? '' : $v->property_unit_price;
+                $data->items()[$k]['property_pay_method'] = $v->property_pay_method == 0 ? '' : $v->property_pay_method;
             }
         }
 

@@ -127,6 +127,9 @@ class House extends Model
         }
         $exportData['property_detail_list'] = $property_detail_list;
 
+        $mNotice = new Notice();
+        $exportData['has_property'] = $mNotice->hasProperty($exportData);
+
         return $exportData;
     }
 }

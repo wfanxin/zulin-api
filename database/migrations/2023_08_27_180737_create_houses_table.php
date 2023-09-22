@@ -34,6 +34,7 @@ class CreateHousesTable extends Migration
             $table->integer('rent_day')->comment('租金计租日');
             $table->tinyInteger('increase_type')->comment('租金涨幅方式：1、递增；2、自定义');
             $table->text('increase_content')->comment('租金涨幅详情');
+            $table->text('remark')->comment('租金备注');
 
             $table->string('property_contract_number', 100)->comment('物业合同编号');
             $table->string('property_safety_person', 100)->comment('安全责任人');
@@ -43,6 +44,7 @@ class CreateHousesTable extends Migration
             $table->integer('property_rent_day')->comment('物业计租日');
             $table->tinyInteger('property_increase_type')->comment('物业涨幅方式：1、递增；2、自定义');
             $table->text('property_increase_content')->comment('物业涨幅详情');
+            $table->text('property_remark')->comment('物业备注');
 
             $table->tinyInteger('status')->default(0)->comment('状态：0、待提交；1、审核中；2、审核通过；3、审核失败');
             $table->text('fail_reason')->comment('失败原因');
