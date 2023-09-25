@@ -25,6 +25,9 @@
             <td colspan="3" valign="center" align="left" height="30px">{{$exportData['pay_method'] == -1 ? '租金计租日：' : ''}}{{$exportData['pay_method'] == -1 ? $exportData['rent_day'] : ''}}</td>
         </tr>
         <tr>
+            <td colspan="9" valign="center" align="left" height="30px">备注：{{ $exportData['remark'] }}</td>
+        </tr>
+        <tr>
             <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
         </tr>
         <tr>
@@ -62,6 +65,9 @@
                 <td colspan="3" valign="center" align="left" height="30px">联系方式：{{$exportData['property_contact_info']}}</td>
                 <td colspan="3" valign="center" align="left" height="30px">物业费支付方式：{{$exportData['property_pay_method_name']}}</td>
                 <td colspan="3" valign="center" align="left" height="30px">{{$exportData['property_pay_method'] == -1 ? '物业计租日：' : ''}}{{$exportData['property_pay_method'] == -1 ? $exportData['property_rent_day'] : ''}}</td>
+            </tr>
+            <tr>
+                <td colspan="9" valign="center" align="left" height="30px">备注：{{ $exportData['property_remark'] }}</td>
             </tr>
             <tr>
                 <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
