@@ -38,7 +38,7 @@ class HouseController extends Controller
 
         $userInfo = $mUser->getCurUser($params['userId']);
         if (!in_array('admin', $userInfo['roles'])) { // 不是超级管理员，查看自己创建的合同
-            $where[] = ['user_id', '=', $params['userId']];
+//            $where[] = ['user_id', '=', $params['userId']];
         }
 
         // 租赁合同
@@ -277,6 +277,7 @@ class HouseController extends Controller
     public function edit(Request $request, House $mHouse)
     {
         $params = $request->all();
+        $params['userId'] = $request->userId;
 
         $id = $params['id'] ?? 0;
 
@@ -288,6 +289,10 @@ class HouseController extends Controller
         $info = $this->dbResult($info);
         if (empty($info)) {
             return $this->jsonAdminResult([],10001, '参数错误');
+        }
+
+        if ($info['user_id'] != $params['userId']) {
+            return $this->jsonAdminResult([],10001, '不能修改别人创建的合同');
         }
 
         // 租金
@@ -460,6 +465,7 @@ class HouseController extends Controller
     public function submitReview(Request $request, House $mHouse)
     {
         $params = $request->all();
+        $params['userId'] = $request->userId;
 
         $id = $params['id'] ?? 0;
 
@@ -471,6 +477,10 @@ class HouseController extends Controller
         $info = $this->dbResult($info);
         if (empty($info)) {
             return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        if ($info['user_id'] != $params['userId']) {
+            return $this->jsonAdminResult([],10001, '不能提交审批别人创建的合同');
         }
 
         if (!in_array($info['status'], [0, 3])) {
@@ -497,11 +507,22 @@ class HouseController extends Controller
     public function del(Request $request, House $mHouse)
     {
         $params = $request->all();
+        $params['userId'] = $request->userId;
 
         $id = $params['id'] ?? 0;
 
         if (empty($id)) {
             return $this->jsonAdminResult([],10001,'参数错误');
+        }
+
+        $info = $mHouse->where('id', $id)->first();
+        $info = $this->dbResult($info);
+        if (empty($info)) {
+            return $this->jsonAdminResult([],10001, '参数错误');
+        }
+
+        if ($info['user_id'] != $params['userId']) {
+            return $this->jsonAdminResult([],10001, '不能删除别人创建的合同');
         }
 
         $res = $mHouse->where('id', $id)->delete();
